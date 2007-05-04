@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.0.1
-Release:        2.2%{?dist}
+Release:        2.3%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Fri May 04 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-2.3
+- Bump and rebuild against RHEL5 final
+
 * Mon Mar 26 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-2.2
 - Fix BR: on gcc-gfortran
 
