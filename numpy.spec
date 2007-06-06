@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.0.3
-Release:        1%{?dist}
+Release:        0.1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
