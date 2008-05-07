@@ -3,8 +3,8 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.0.1
-Release:        2.3%{?dist}
+Version:        1.0.4
+Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -12,7 +12,6 @@ License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
-Patch1:         numpy-1.0-gfortran.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel python-setuptools gcc-gfortran
@@ -36,7 +35,6 @@ this package is a version of f2py that works properly with NumPy.
 %prep
 %setup -q
 %patch0 -p1 -b .f2py
-%patch1 -p1 -b .gfortran
 
 %build
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -75,6 +73,23 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Tue May 06 2008 Jarod Wilson <jwilson@redhat.com> 1.0.4-1
+- New upstream release
+
+* Wed Aug 22 2007 Jarod Wilson <jwilson@redhat.com> 1.0.3.1-1
+- New upstream release
+
+* Wed Jun 06 2007 Jarod Wilson <jwilson@redhat.com> 1.0.3-1
+- New upstream release
+
+* Mon May 14 2007 Jarod Wilson <jwilson@redhat.com> 1.0.2-2
+- Drop BR: atlas-devel, since it just provides binary-compat
+  blas and lapack libs. Atlas can still be optionally used
+  at runtime. (Note: this is all per the atlas maintainer).
+
+* Mon May 14 2007 Jarod Wilson <jwilson@redhat.com> 1.0.2-1
+- New upstream release
+
 * Fri May 04 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-2.3
 - Bump and rebuild against RHEL5 final
 
