@@ -3,7 +3,7 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.0.4
+Version:        1.1.0
 Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
@@ -56,7 +56,7 @@ pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
 ln -s f2py f2py.numpy
 popd &> /dev/null
 
-%check ||:
+%check
 pushd doc &> /dev/null
 PYTHONPATH="$RPM_BUILD_ROOT%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test(1, 1)"
 popd &> /dev/null
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu May 29 2008 Jarod Wilson <jwilson@redhat.com> 1.1.0-1
+- New upstream release
+
 * Tue May 06 2008 Jarod Wilson <jwilson@redhat.com> 1.0.4-1
 - New upstream release
 
