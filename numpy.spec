@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.0.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -15,7 +15,7 @@ Patch0:         numpy-1.0.1-f2py.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel python-setuptools gcc-gfortran
-BuildRequires:  blas-devel lapack-devel
+BuildRequires:  atlas lapack-devel
 
 Provides:       f2py
 Obsoletes:      f2py <= 2.45.241_1927
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Thu Apr 02 2009 Jon Ciesla <limb@jcomserv.net> 1.0.4-2
+- Build against atlas instead of blas. BZ 461472.
+
 * Tue May 06 2008 Jarod Wilson <jwilson@redhat.com> 1.0.4-1
 - New upstream release
 
