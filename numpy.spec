@@ -3,8 +3,8 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.0.4
-Release:        2%{?dist}
+Version:        1.2.1
+Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Thu May 04 2009 Jon Ciesla <limb@jcomserv.net> 1.2.1-1
+- Update to 1.2.1.
+
 * Thu Apr 02 2009 Jon Ciesla <limb@jcomserv.net> 1.0.4-2
 - Build against atlas instead of blas. BZ 461472.
 
