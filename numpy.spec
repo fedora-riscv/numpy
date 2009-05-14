@@ -14,8 +14,8 @@ Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  python-devel python-setuptools gcc-gfortran
-BuildRequires:  atlas lapack-devel
+BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas python-nose
+Requires:	python-nose python-devel
 
 Provides:       f2py
 Obsoletes:      f2py <= 2.45.241_1927
@@ -33,7 +33,7 @@ basic linear algebra and random number generation. Also included in
 this package is a version of f2py that works properly with NumPy.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
 
 %build
@@ -57,9 +57,9 @@ pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
 ln -s f2py f2py.numpy
 popd &> /dev/null
 
-%check ||:
+%check
 pushd doc &> /dev/null
-PYTHONPATH="$RPM_BUILD_ROOT%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test(1, 1)"
+PYTHONPATH="%{buildroot}%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test()"
 popd &> /dev/null
 
 %clean
@@ -71,16 +71,32 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_mandir}/man*/*
 %{python_sitearch}/%{name}
+%if 0%{?fedora} >= 9
+%{python_sitearch}/%{name}-*.egg-info
+%endif
 
 %changelog
 * Thu May 04 2009 Jon Ciesla <limb@jcomserv.net> 1.2.1-1
-- Update to 1.2.1.
+- 1.2.1.
 
-* Thu Apr 02 2009 Jon Ciesla <limb@jcomserv.net> 1.0.4-2
-- Build against atlas instead of blas. BZ 461472.
+* Thu Mar 05 2009 Jon Ciesla <limb@jcomserv.net> 1.2.0-2
+- Requires python-devel, BZ 488464.
+
+* Tue Oct 07 2008 Jon Ciesla <limb@jcomserv.net> 1.2.0-1
+- New upstream release, added python-nose BR. BZ 465999.
+- Using atlas blas, not blas-devel. BZ 461472.
+
+* Wed Aug 06 2008 Jon Ciesla <limb@jcomserv.net> 1.1.1-1
+- New upstream release
+
+* Thu May 29 2008 Jarod Wilson <jwilson@redhat.com> 1.1.0-1
+- New upstream release
 
 * Tue May 06 2008 Jarod Wilson <jwilson@redhat.com> 1.0.4-1
 - New upstream release
+
+* Mon Feb 11 2008 Jarod Wilson <jwilson@redhat.com> 1.0.3.1-2
+- Add python egg to %%files on f9+
 
 * Wed Aug 22 2007 Jarod Wilson <jwilson@redhat.com> 1.0.3.1-1
 - New upstream release
@@ -96,14 +112,13 @@ rm -rf $RPM_BUILD_ROOT
 * Mon May 14 2007 Jarod Wilson <jwilson@redhat.com> 1.0.2-1
 - New upstream release
 
-* Fri May 04 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-2.3
-- Bump and rebuild against RHEL5 final
+* Tue Apr 17 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-4
+- Update gfortran patch to recognize latest gfortran f95 support 
+- Resolves rhbz#236444
 
-* Mon Mar 26 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-2.2
-- Fix BR: on gcc-gfortran
-
-* Sat Mar 24 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-2.1
-- Build for EL5 w/o atlas
+* Fri Feb 23 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-3
+- Fix up cpuinfo bug (#229753). Upstream bug/change:
+  http://projects.scipy.org/scipy/scipy/ticket/349
 
 * Thu Jan 04 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-2
 - Per discussion w/Jose Matos, Obsolete/Provide f2py, as the
