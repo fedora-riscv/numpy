@@ -3,8 +3,9 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.4.0
-Release:        4%{?dist}
+Version:        1.3.0
+Release:        7%{?dist}
+Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -33,7 +34,7 @@ this package is a version of f2py that works properly with NumPy.
 %package f2py
 Summary:        f2py for numpy
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{epoch}:%{version}-%{release}
 Requires:       python-devel
 Provides:       f2py
 Obsoletes:      f2py <= 2.45.241_1927
@@ -67,6 +68,10 @@ pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
 ln -s f2py f2py.numpy
 popd &> /dev/null
 
+#symlink for includes, BZ 185079
+mkdir -p $RPM_BUILD_ROOT/usr/include
+ln -s %{python_sitearch}/%{name}/core/include/numpy/ $RPM_BUILD_ROOT/usr/include/numpy
+
 # Remove doc files. They should in in %doc
 rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/COMPATIBILITY
 rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/DEV_README.txt
@@ -99,12 +104,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}/random
 %{python_sitearch}/%{name}/testing
 %{python_sitearch}/%{name}/tests
-%{python_sitearch}/%{name}/compat
-%{python_sitearch}/%{name}/matrixlib
-%{python_sitearch}/%{name}/polynomial
+#%{python_sitearch}/%{name}/compat
+#%{python_sitearch}/%{name}/matrixlib
+#%{python_sitearch}/%{name}/polynomial
 %if 0%{?fedora} >= 9
 %{python_sitearch}/%{name}-*.egg-info
 %endif
+%{_includedir}/numpy
 
 %files f2py
 %defattr(-,root,root,-)
@@ -116,6 +122,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 08 2010 Jon Ciesla <limb@jcomserv.net> 1.3.0-7
+- Reverted to 1.3.0 after upstream pulled 1.4.0, BZ 579065.
+
+* Tue Mar 02 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-5
+- Linking /usr/include/numpy to .h files, BZ 185079.
+
 * Tue Feb 16 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-4
 - Re-enabling atlas BR, dropping lapack Requires.
 
