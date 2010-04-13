@@ -4,7 +4,8 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        6%{?dist}
+Release:        7%{?dist}
+Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -12,6 +13,7 @@ License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
+#Patch1:         numpy-arm.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
@@ -32,7 +34,7 @@ this package is a version of f2py that works properly with NumPy.
 %package f2py
 Summary:        f2py for numpy
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{epoch}:%{version}-%{release}
 Requires:       python-devel
 Provides:       f2py
 Obsoletes:      f2py <= 2.45.241_1927
@@ -43,6 +45,7 @@ This package includes a version of f2py that works properly with NumPy.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
+#%patch1 -p1 -b .arm
 
 %build
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -64,6 +67,10 @@ pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py f2py.numpy
 popd &> /dev/null
+
+#symlink for includes, BZ 185079
+mkdir -p $RPM_BUILD_ROOT/usr/include
+ln -s %{python_sitearch}/%{name}/core/include/numpy/ $RPM_BUILD_ROOT/usr/include/numpy
 
 # Remove doc files. They should in in %doc
 rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/COMPATIBILITY
@@ -97,9 +104,13 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}/random
 %{python_sitearch}/%{name}/testing
 %{python_sitearch}/%{name}/tests
+#%{python_sitearch}/%{name}/compat
+#%{python_sitearch}/%{name}/matrixlib
+#%{python_sitearch}/%{name}/polynomial
 %if 0%{?fedora} >= 9
 %{python_sitearch}/%{name}-*.egg-info
 %endif
+%{_includedir}/numpy
 
 %files f2py
 %defattr(-,root,root,-)
@@ -111,6 +122,28 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 08 2010 Jon Ciesla <limb@jcomserv.net> 1.3.0-7
+- Reverted to 1.3.0 after upstream pulled 1.4.0, BZ 579065.
+
+* Tue Mar 02 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-5
+- Linking /usr/include/numpy to .h files, BZ 185079.
+
+* Tue Feb 16 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-4
+- Re-enabling atlas BR, dropping lapack Requires.
+
+* Wed Feb 10 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-3
+- Since the previous didn't work, Requiring lapack.
+
+* Tue Feb 09 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-2
+- Temporarily dropping atlas BR to work around 562577.
+
+* Fri Jan 22 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-1
+- 1.4.0.
+- Dropped ARM patch, ARM support added upstream.
+
+* Tue Nov 17 2009 Jitesh Shah <jiteshs@marvell.com> - 1.3.0-6.fa1
+- Add ARM support
+
 * Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
