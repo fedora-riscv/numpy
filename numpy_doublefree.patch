@@ -1,0 +1,10 @@
++++ numpy/core/src/arrayobject.c	2009-04-05 00:19:55.000000000 -0800
+--- numpy/core/src/arrayobject.c.new	2010-06-24 08:47:52.271457871 -0800
+@@ -3527,6 +3527,7 @@
+ #define SET(op)   temp=PyDict_GetItemString(dict, #op); \
+     if (temp != NULL) {                                 \
+         if (!(PyCallable_Check(temp))) return -1;       \
++        Py_INCREF(temp);                                  \
+         Py_XDECREF(n_ops.op);                           \
+         n_ops.op = temp;                                \
+     }

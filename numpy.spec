@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -13,7 +13,7 @@ License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
-#Patch1:         numpy-arm.patch
+Patch1:         numpy_doublefree.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
@@ -45,7 +45,7 @@ This package includes a version of f2py that works properly with NumPy.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
-#%patch1 -p1 -b .arm
+%patch1 -p0 
 
 %build
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -122,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 24 2010 Jef Spaleta <jspaleta@fedoraproject.org> 1.3.0-9
+- Backport fix for doublefree situation from upstream trunk, BZ 607683.
+
 * Mon Apr 26 2010 Jon Ciesla <limb@jcomserv.net> 1.3.0-8
 - Moved distutils back to the main package, BZ 572820.
 
