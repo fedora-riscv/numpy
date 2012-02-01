@@ -8,8 +8,8 @@
 %global relc %{nil}
 
 Name:           numpy
-Version:        1.6.0
-Release:        2.1%{?dist}
+Version:        1.6.1
+Release:        2%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -247,6 +247,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.6.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
+* Mon Nov 7 2011 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.1-1
+- Update to 1.6.1
+
 * Mon Oct 03 2011 Jon Ciesla <limb@jcomserv.net> - 1:1.6.0-2.1
 - Bump and rebuild for RelEng Trac 4938.
 
