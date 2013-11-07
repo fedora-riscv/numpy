@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-#global relc rc1
+%global relc %{nil}
 
 Name:           numpy
-Version:        1.7.1
-Release:        6%{?dist}
+Version:        1.8.0
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -18,8 +18,6 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-Patch1:         f2py-shebang.patch
-Patch2:         fix-library-ext.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
@@ -85,11 +83,18 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-%patch1 -p1
-%patch2 -p1
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
+
+# Atlas 3.10 library names
+%if 0%{?fedora} >= 21
+cat >> site.cfg <<EOF
+[atlas]
+library_dirs = %{_libdir}/atlas
+atlas_libs = satlas
+EOF
+%endif
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -191,7 +196,7 @@ popd &> /dev/null
 
 
 %files
-%doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 %{python_sitearch}/%{name}/core
@@ -212,6 +217,7 @@ popd &> /dev/null
 %{_includedir}/numpy
 
 %files f2py
+%doc docs-f2py
 %{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py.numpy
@@ -219,7 +225,7 @@ popd &> /dev/null
 
 %if 0%{?with_python3}
 %files -n python3-numpy
-%doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__/*
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
@@ -240,12 +246,19 @@ popd &> /dev/null
 %{python3_sitearch}/%{name}-*.egg-info
 
 %files -n python3-numpy-f2py
+%doc docs-f2py
 %{_bindir}/f2py3
 %{python3_sitearch}/%{name}/f2py
 %endif # with_python3
 
 
 %changelog
+* Wed Nov 6 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-2
+- Move f2py documentation to f2py package (bug #1027394)
+
+* Wed Oct 30 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-1
+- Update to 1.8.0 final
+
 * Mon Oct 14 2013 Tomas Tomecek <ttomecek@redhat.com> - 1:1.7.1-6
 - fix name of shared library extensions (rhbz#1018783)
 
