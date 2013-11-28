@@ -45,6 +45,12 @@ There are also basic facilities for discrete fourier transform,
 basic linear algebra and random number generation. Also included in
 this package is a version of f2py that works properly with NumPy.
 
+%package doc
+Summary:	Sphinx HTML documentation for numpy
+
+%description doc
+This package contains the Sphinx built HTML documentation for numpy.
+
 %package f2py
 Summary:        f2py for numpy
 Group:          Development/Libraries
@@ -176,7 +182,7 @@ popd &> /dev/null
 
 
 %files
-%doc doc/build/ doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 %{python_sitearch}/%{name}/core
@@ -196,6 +202,9 @@ popd &> /dev/null
 %{python_sitearch}/%{name}/polynomial
 %{python_sitearch}/%{name}-*.egg-info
 %{_includedir}/numpy
+
+%files doc
+%doc doc/build/html LICENSE.txt
 
 %files f2py
 %doc docs-f2py
