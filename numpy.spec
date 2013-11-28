@@ -23,6 +23,9 @@ Patch2:         fix-library-ext.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
+# For doc build
+BuildRequires:  python-sphinx
+BuildRequires:  python-matplotlib
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
@@ -109,6 +112,11 @@ env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python} setup.py build
 
+# Build sphinx docs
+pushd doc/
+env PYTHONPATH=$(ls -d ../build/lib.linux-*-*/) make html
+popd
+
 %install
 # first install python3 so the binaries are overwritten by the python2 ones
 %if 0%{?with_python3}
@@ -168,7 +176,7 @@ popd &> /dev/null
 
 
 %files
-%doc doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/build/ doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 %{python_sitearch}/%{name}/core
@@ -198,7 +206,7 @@ popd &> /dev/null
 
 %if 0%{?with_python3}
 %files -n python3-numpy
-%doc doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/build/ doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__/*
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
