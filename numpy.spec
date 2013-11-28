@@ -236,6 +236,7 @@ popd &> /dev/null
 
 %changelog
 * Wed Nov 27 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.1-7
+- Build sphinx docs (bug #1034357)
 - Ship doc module (bug #1034357)
 - Move f2py documentation to f2py package (bug #1027394)
 
