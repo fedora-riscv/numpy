@@ -47,6 +47,7 @@ this package is a version of f2py that works properly with NumPy.
 
 %package doc
 Summary:	Sphinx HTML documentation for numpy
+BuildArch:      noarch
 
 %description doc
 This package contains the Sphinx built HTML documentation for numpy.
