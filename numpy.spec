@@ -8,7 +8,7 @@
 #global relc rc1
 
 Name:           numpy
-Version:        1.7.1
+Version:        1.7.2
 Release:        7%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
@@ -19,7 +19,6 @@ License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
 Patch1:         f2py-shebang.patch
-Patch2:         fix-library-ext.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
@@ -96,7 +95,6 @@ This package includes a version of f2py that works properly with NumPy.
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
 %patch1 -p1
-%patch2 -p1
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
@@ -245,6 +243,10 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Jan 1 2014 Orion Poplawski <orion@nwra.com> - 1:1.7.2-1
+- Update to 1.7.2
+- Drop library-ext patch applied upstream
+
 * Wed Nov 27 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.1-7
 - Build sphinx docs (bug #1034357)
 - Ship doc module (bug #1034357)
