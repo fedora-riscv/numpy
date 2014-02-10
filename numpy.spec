@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.7.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -18,6 +18,13 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+
+# Fix of CVE-2014-1858, CVE-2014-1859: #1062009, #1062359
+# Modified version of 3 upstream commits, so they apply to current version:
+# - 8296aa0b911c036c984e23665ee0f7ddca579b91
+# - 524b9eaa33ec67e34eb31a208e02bb934f778096
+# - 0bb46c1448b0d3f5453d5182a17ea7ac5854ee15
+Patch0:         numpy-insecure-mktemp-use.patch
 Patch1:         f2py-shebang.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
@@ -94,6 +101,7 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
+%patch0 -p1
 %patch1 -p1
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
@@ -243,7 +251,10 @@ popd &> /dev/null
 
 
 %changelog
-* Wed Jan 1 2014 Orion Poplawski <orion@nwra.com> - 1:1.7.2-1
+* Mon Feb 10 2014 Orion Poplawski <orion@nwra.com> - 1:1.7.2-8
+- Fix CVE-2014-1858, CVE-2014-1859: #1062009, #1062359
+
+* Wed Jan 1 2014 Orion Poplawski <orion@nwra.com> - 1:1.7.2-7
 - Update to 1.7.2
 - Drop library-ext patch applied upstream
 
