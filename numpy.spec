@@ -8,7 +8,7 @@
 %global relc %{nil}
 
 Name:           numpy
-Version:        1.8.1
+Version:        1.8.2
 Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
@@ -18,6 +18,8 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+
+Patch0:         numpy-1.8.1.ppc64le.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
@@ -83,6 +85,9 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
+
+%patch0 -p1
+
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
@@ -104,13 +109,13 @@ cp -a . %{py3dir}
 %build
 %if 0%{?with_python3}
 pushd %{py3dir}
-env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+env ATLAS=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py build
 popd
 %endif # with _python3
 
-env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+env ATLAS=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python} setup.py build
 
@@ -232,6 +237,18 @@ popd &> /dev/null
 
 
 %changelog
+* Sun Aug 10 2014 Orion Poplawski <orion@nwra.com> - 1:1.8.2-1
+- Update to 1.8.2
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.8.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Fri May 9 2014 Orion Poplawski <orion@nwra.com> - 1:1.8.1-3
+- Rebuild for Python 3.4
+
+* Wed May 07 2014 Jaromir Capik <jcapik@redhat.com> - 1:1.8.1-2
+- Fixing FTBFS on ppc64le (#1078354)
+
 * Tue Mar 25 2014 Orion Poplawski <orion@nwra.com> - 1:1.8.1-1
 - Update to 1.8.1
 
