@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.13.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -21,8 +21,14 @@ License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 
-BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
+BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran python-nose
 BuildRequires:  Cython
+%ifarch %{openblas_arches}
+BuildRequires: openblas-devel
+%else
+BuildRequires: atlas-devel
+%endif
+
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -253,6 +259,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Aug 08 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.13.1-4
+- Use openblas where available, BZ 1472318.
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.13.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
