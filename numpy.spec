@@ -10,8 +10,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.13.1
-Release:        4%{?dist}
+Version:        1.13.2
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -259,6 +259,9 @@ popd &> /dev/null
 
 
 %changelog
+* Thu Sep 28 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.13.2-1
+- 1.13.2
+
 * Tue Aug 08 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.13.1-4
 - Use openblas where available, BZ 1472318.
 
