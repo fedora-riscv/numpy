@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.13.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -122,6 +122,14 @@ This package includes a version of f2py that works properly with NumPy.
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
 
+%ifarch %{openblas_arches}
+# Use openblas pthreads as recommended by upstream (see comment in site.cfg.example)
+cat >> site.cfg <<EOF
+[openblas]
+library_dirs = %{_libdir}
+openblas_libs = openblasp
+EOF
+%else
 # Atlas 3.10 library names
 %if 0%{?fedora} >= 21
 cat >> site.cfg <<EOF
@@ -129,6 +137,7 @@ cat >> site.cfg <<EOF
 library_dirs = %{_libdir}/atlas
 atlas_libs = satlas
 EOF
+%endif
 %endif
 
 %if 0%{?with_python3}
@@ -139,13 +148,23 @@ cp -a . %{py3dir}
 %build
 %if 0%{?with_python3}
 pushd %{py3dir}
-env ATLAS=%{_libdir} BLAS=%{_libdir} \
+%ifarch %{openblas_arches}
+env OPENBLAS=%{_libdir} \
+%else
+env ATLAS=%{_libdir} \
+%endif
+    BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py build
 popd
 %endif # with _python3
 
-env ATLAS=%{_libdir} BLAS=%{_libdir} \
+%ifarch %{openblas_arches}
+env OPENBLAS=%{_libdir} \
+%else
+env ATLAS=%{_libdir} \
+%endif
+    BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python} setup.py build
 
@@ -155,7 +174,12 @@ env ATLAS=%{_libdir} BLAS=%{_libdir} \
 pushd %{py3dir}
 #%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
-env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+%ifarch %{openblas_arches}
+env OPENBLAS=%{_libdir} \
+%else 
+env ATLAS=%{_libdir} \
+%endif
+    FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py install --root %{buildroot}
 pushd %{buildroot}%{_bindir} &> /dev/null
@@ -166,7 +190,12 @@ popd
 
 #%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
-env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+%ifarch %{openblas_arches}
+env OPENBLAS=%{_libdir} \
+%else
+env ATLAS=%{_libdir} \
+%endif
+    FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python2} setup.py install --root %{buildroot}
 pushd %{buildroot}%{_bindir} &> /dev/null
@@ -259,6 +288,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Oct 31 2017 Christian Dersch <lupinix@mailbox.org> - 1:1.13.3-2
+- set proper environment variables for openblas
+
 * Wed Oct 04 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.13.3-1
 - 1.13.3
 
