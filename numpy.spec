@@ -1,4 +1,4 @@
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %global with_python3 1
 %else
 %{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.13.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -131,7 +131,7 @@ openblas_libs = openblasp
 EOF
 %else
 # Atlas 3.10 library names
-%if 0%{?fedora} >= 21
+%if 0%{?fedora} >= 21 || 0%{?rhel} > 7
 cat >> site.cfg <<EOF
 [atlas]
 library_dirs = %{_libdir}/atlas
@@ -288,6 +288,9 @@ popd &> /dev/null
 
 
 %changelog
+* Mon Nov 06 2017 Merlin Mathesius <mmathesi@redhat.com> - 1:1.13.3-3
+- Cleanup spec file conditionals
+
 * Tue Oct 31 2017 Christian Dersch <lupinix@mailbox.org> - 1:1.13.3-2
 - set proper environment variables for openblas
 
