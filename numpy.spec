@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.13.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -20,6 +20,7 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.13.0.zip
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran python-nose
 BuildRequires:  Cython
@@ -78,6 +79,15 @@ Obsoletes:      numpy-f2py < 1:1.10.1-3
 %description -n python2-numpy-f2py
 This package includes a version of f2py that works properly with NumPy.
 
+
+%package -n python2-numpy-doc
+Summary:	Documentation for numpy
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+BuildArch:	noarch
+
+%description -n python2-numpy-doc
+This package provides the complete documentation for NumPy.
+
 %if 0%{?with_python3}
 %package -n python3-numpy
 Summary:        A fast multidimensional array facility for Python
@@ -112,6 +122,15 @@ Obsoletes:      python3-f2py <= 2.45.241_1927
 
 %description -n python3-numpy-f2py
 This package includes a version of f2py that works properly with NumPy.
+
+%package -n python3-numpy-doc
+Summary:	Documentation for numpy
+Requires:	python3-numpy = %{epoch}:%{version}-%{release}
+BuildArch:	noarch
+
+%description -n python3-numpy-doc
+This package provides the complete documentation for NumPy.
+
 %endif # with_python3
 
 %prep
@@ -169,6 +188,11 @@ env ATLAS=%{_libdir} \
     %{__python} setup.py build
 
 %install
+mkdir docs
+pushd docs
+unzip %{SOURCE1}
+popd
+
 # first install python3 so the binaries are overwritten by the python2 ones
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -186,6 +210,7 @@ pushd %{buildroot}%{_bindir} &> /dev/null
 popd &> /dev/null
 
 popd
+
 %endif # with_python3
 
 #%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
@@ -207,6 +232,7 @@ install -D -p -m 0644 doc/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 #symlink for includes, BZ 185079
 mkdir -p %{buildroot}/usr/include
 ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/numpy
+
 
 
 %check
@@ -259,6 +285,9 @@ popd &> /dev/null
 %{_bindir}/f2py.numpy
 %{python2_sitearch}/%{name}/f2py
 
+%files -n python2-numpy-doc
+%doc docs/*
+
 %if 0%{?with_python3}
 %files -n python3-numpy
 %license LICENSE.txt
@@ -284,6 +313,10 @@ popd &> /dev/null
 %files -n python3-numpy-f2py
 %{_bindir}/f2py3
 %{python3_sitearch}/%{name}/f2py
+
+%files -n python3-numpy-doc
+%doc docs/*
+
 %endif # with_python3
 
 
