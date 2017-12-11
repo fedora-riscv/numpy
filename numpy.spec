@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.13.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -22,7 +22,7 @@ URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.13.0.zip
 
-BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran python-nose
+BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
 BuildRequires:  Cython
 %ifarch %{openblas_arches}
 BuildRequires: openblas-devel
@@ -46,7 +46,7 @@ this package is a version of f2py that works properly with NumPy.
 
 %package -n python2-numpy
 Summary:        A fast multidimensional array facility for Python
-Requires:       python-nose
+Requires:       python2-nose
 %{?python_provide:%python_provide python2-%{modname}}
 # General provides of plain 'numpy' that is in use by 1 package as of F24
 Provides:       numpy = %{epoch}:%{version}-%{release}
@@ -69,7 +69,7 @@ this package is a version of f2py that works properly with NumPy.
 Summary:        f2py for numpy
 Group:          Development/Libraries
 Requires:       %{name} = %{epoch}:%{version}-%{release}
-Requires:       python-devel
+Requires:       python2-devel
 Provides:       f2py = %{epoch}:%{version}-%{release}
 Provides:       numpy-f2py = %{epoch}:%{version}-%{release}
 Obsoletes:      numpy-f2py < 1:1.10.1-3
@@ -321,6 +321,10 @@ popd &> /dev/null
 
 
 %changelog
+* Mon Dec 11 2017 Iryna Shcherbina <ishcherb@redhat.com> - 1:1.13.3-5
+- Fix ambiguous Python 2 dependency declarations
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
 * Mon Nov 06 2017 Merlin Mathesius <mmathesi@redhat.com> - 1:1.13.3-3
 - Cleanup spec file conditionals
 
