@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-#%%global relc rc2
+%global relc rc1
 
 %global modname numpy
 
 Name:           numpy
-Version:        1.13.3
-Release:        5%{?dist}
+Version:        1.14.0
+Release:        0.%relc%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -19,7 +19,7 @@ Group:          Development/Languages
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
-Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}%relc.tar.gz
 Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.13.0.zip
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
@@ -227,7 +227,7 @@ pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py f2py.numpy
 popd &> /dev/null
-install -D -p -m 0644 doc/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
+#install -D -p -m 0644 docs/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
 #symlink for includes, BZ 185079
 mkdir -p %{buildroot}/usr/include
@@ -276,10 +276,11 @@ popd &> /dev/null
 %{python2_sitearch}/%{name}/polynomial
 %{python2_sitearch}/%{name}-*.egg-info
 %{_includedir}/numpy
+%exclude %{python2_sitearch}/%{name}/LICENSE.txt
 
 %files -n python2-numpy-f2py
-%doc doc/f2py/*.txt
-%{_mandir}/man*/*
+%doc docs/f2py/*.html
+#%{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py2
 %{_bindir}/f2py.numpy
@@ -309,6 +310,7 @@ popd &> /dev/null
 %{python3_sitearch}/%{name}/matrixlib
 %{python3_sitearch}/%{name}/polynomial
 %{python3_sitearch}/%{name}-*.egg-info
+%exclude %{python3_sitearch}/%{name}/LICENSE.txt
 
 %files -n python3-numpy-f2py
 %{_bindir}/f2py3
@@ -321,6 +323,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Dec 13 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.14.0-0.rc1
+- 1.14.0 rc1
+
 * Mon Dec 11 2017 Iryna Shcherbina <ishcherb@redhat.com> - 1:1.13.3-5
 - Fix ambiguous Python 2 dependency declarations
   (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
