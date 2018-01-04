@@ -330,6 +330,9 @@ popd &> /dev/null
 - Fix ambiguous Python 2 dependency declarations
   (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
 
+* Thu Nov 16 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.13.3-4
+- Split out doc subpackage.
+
 * Mon Nov 06 2017 Merlin Mathesius <mmathesi@redhat.com> - 1:1.13.3-3
 - Cleanup spec file conditionals
 
