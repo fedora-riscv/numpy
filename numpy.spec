@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.14.0
-Release:        0.%relc%{?dist}
+Release:        0.%relc%{?dist}.1
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -323,6 +323,9 @@ popd &> /dev/null
 
 
 %changelog
+* Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.14.0-0.rc1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Wed Dec 13 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.14.0-0.rc1
 - 1.14.0 rc1
 
