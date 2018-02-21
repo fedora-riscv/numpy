@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc rc1
+#%%global relc rc1
 
 %global modname numpy
 
 Name:           numpy
-Version:        1.14.0
-Release:        0.%relc%{?dist}.1
+Version:        1.14.1
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -19,7 +19,7 @@ Group:          Development/Languages
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
-Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}%relc.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.13.0.zip
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
@@ -323,6 +323,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Feb 21 2018 Gwyn Ciesla <limburgher@gmail.com> - 1:1.14.1-1
+- 1.14.1
+
 * Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.14.0-0.rc1.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
