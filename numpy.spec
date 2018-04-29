@@ -185,7 +185,7 @@ env ATLAS=%{_libdir} \
 %endif
     BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    %{__python} setup.py build
+    %{__python2} setup.py build
 
 %install
 mkdir docs
@@ -196,7 +196,7 @@ popd
 # first install python3 so the binaries are overwritten by the python2 ones
 %if 0%{?with_python3}
 pushd %{py3dir}
-#%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
+#%%{__python3} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
 %ifarch %{openblas_arches}
 env OPENBLAS=%{_libdir} \
@@ -213,7 +213,7 @@ popd
 
 %endif # with_python3
 
-#%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
+#%%{__python2} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
 %ifarch %{openblas_arches}
 env OPENBLAS=%{_libdir} \
