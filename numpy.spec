@@ -10,17 +10,16 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.14.2
+Version:        1.14.3
 Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
-Group:          Development/Languages
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
-Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.13.0.zip
+Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.14.2.zip
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
 BuildRequires:  Cython
@@ -67,7 +66,6 @@ this package is a version of f2py that works properly with NumPy.
 
 %package -n python2-numpy-f2py
 Summary:        f2py for numpy
-Group:          Development/Libraries
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 Requires:       python2-devel
 Provides:       f2py = %{epoch}:%{version}-%{release}
@@ -92,7 +90,6 @@ This package provides the complete documentation for NumPy.
 %package -n python3-numpy
 Summary:        A fast multidimensional array facility for Python
 
-Group:          Development/Languages
 License:        BSD
 %{?python_provide:%python_provide python3-numpy}
 BuildRequires:  python3-devel
@@ -113,7 +110,6 @@ this package is a version of f2py that works properly with NumPy.
 
 %package -n python3-numpy-f2py
 Summary:        f2py for numpy
-Group:          Development/Libraries
 Requires:       python3-numpy = %{epoch}:%{version}-%{release}
 Requires:       python3-devel
 Provides:       python3-f2py = %{version}-%{release}
@@ -225,7 +221,8 @@ env ATLAS=%{_libdir} \
     %{__python2} setup.py install --root %{buildroot}
 pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
-ln -s f2py f2py.numpy
+ln -s f2py2 f2py.numpy
+ln -s f2py2 f2py
 popd &> /dev/null
 #install -D -p -m 0644 docs/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
@@ -280,7 +277,7 @@ popd &> /dev/null
 
 %files -n python2-numpy-f2py
 %doc docs/f2py/*.html
-#%{_mandir}/man*/*
+#%%{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py2
 %{_bindir}/f2py.numpy
@@ -323,6 +320,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue May 01 2018 Gwyn Ciesla <limburgher@gmail.com> - 1:1.14.3-1
+- 1.14.3
+
 * Mon Mar 12 2018 Gwyn Ciesla <limburgher@gmail.com> - 1:1.14.2-1
 - 1.14.2
 
