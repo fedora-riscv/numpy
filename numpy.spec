@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.14.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -320,6 +320,9 @@ popd &> /dev/null
 
 
 %changelog
+* Fri Jun 15 2018 Miro Hrončok <mhroncok@redhat.com> - 1:1.14.5-2
+- Rebuilt for Python 3.7
+
 * Wed Jun 13 2018 Gwyn Ciesla <limburgher@gmail.com> - 1:1.14.5-1
 - 1.14.5
 
