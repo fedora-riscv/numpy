@@ -10,8 +10,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.14.5
-Release:        3%{?dist}
+Version:        1.15.0
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -22,7 +22,7 @@ Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}
 Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.14.5.zip
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
-BuildRequires:  Cython
+BuildRequires:  Cython python2-pytest
 %ifarch %{openblas_arches}
 BuildRequires: openblas-devel
 %else
@@ -95,6 +95,7 @@ License:        BSD
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-nose
+BuildRequires:  python3-pytest
 
 %description -n python3-numpy
 NumPy is a general-purpose array-processing package designed to
@@ -222,7 +223,7 @@ env ATLAS=%{_libdir} \
 pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py2 f2py.numpy
-ln -s f2py2 f2py
+#ln -s f2py2 f2py
 popd &> /dev/null
 #install -D -p -m 0644 docs/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
@@ -274,6 +275,9 @@ popd &> /dev/null
 %{python2_sitearch}/%{name}-*.egg-info
 %{_includedir}/numpy
 %exclude %{python2_sitearch}/%{name}/LICENSE.txt
+%{_bindir}/conv-template
+%{_bindir}/from-template
+%{python2_sitearch}/numpy/__pycache__/conftest.cpython-27-PYTEST.pyc
 
 %files -n python2-numpy-f2py
 %doc docs/f2py/*.html
@@ -320,6 +324,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Jul 24 2018 Gwyn Ciesla <limburgher@gmail.com> - 1:1.15.0-1
+- 1.15.0
+
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.14.5-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
