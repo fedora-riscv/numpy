@@ -277,7 +277,9 @@ popd &> /dev/null
 %exclude %{python2_sitearch}/%{name}/LICENSE.txt
 %{_bindir}/conv-template
 %{_bindir}/from-template
-%{python2_sitearch}/numpy/__pycache__/conftest.cpython-27-PYTEST.pyc
+%ifnarch s390x
+%{python2_sitearch}/numpy/__pycache__/*
+%endif
 
 %files -n python2-numpy-f2py
 %doc docs/f2py/*.html
@@ -294,7 +296,7 @@ popd &> /dev/null
 %files -n python3-numpy
 %license LICENSE.txt
 %doc THANKS.txt site.cfg.example
-%{python3_sitearch}/%{name}/__pycache__
+%{python3_sitearch}/%{name}/__pycache__/*
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
 %{python3_sitearch}/%{name}/core
