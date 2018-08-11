@@ -237,21 +237,13 @@ ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/n
 %check
 pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python2_sitearch}" PYTHONDONTWRITEBYTECODE=1 \
-    %{__python2} -c "import pkg_resources, numpy ; numpy.test(verbose=2)" \
-%ifarch s390 s390x
-|| :
-%endif
-# don't remove this comment
+    %{__python2} -c "import pkg_resources, numpy ; numpy.test(verbose=2)"
 popd &> /dev/null
 
 %if 0%{?with_python3}
 pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python3_sitearch}" PYTHONDONTWRITEBYTECODE=1 \
-    %{__python3} -c "import pkg_resources, numpy ; numpy.test(verbose=2)" \
-%ifarch s390 s390x
-|| :
-%endif
-# don't remove this comment
+    %{__python3} -c "import pkg_resources, numpy ; numpy.test(verbose=2)"
 popd &> /dev/null
 
 %endif # with_python3
@@ -329,6 +321,7 @@ popd &> /dev/null
 * Sat Aug 11 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.0-2
 - Fix broken build on s390x
 - Remove bytecode produced by pytest
+- Re-enable tests on s390x
 
 * Tue Jul 24 2018 Gwyn Ciesla <limburgher@gmail.com> - 1:1.15.0-1
 - 1.15.0
