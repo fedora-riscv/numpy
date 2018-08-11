@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.15.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -20,6 +20,8 @@ License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.14.5.zip
+# https://github.com/numpy/numpy/pull/11711
+Patch0001:      0001-BUG-Fix-undefined-functions-on-big-endian-systems.patch
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
 BuildRequires:  Cython python2-pytest
@@ -131,8 +133,7 @@ This package provides the complete documentation for NumPy.
 %endif # with_python3
 
 %prep
-%setup -q -n %{name}-%{version}%{?relc}
-#%setup -q -n numpy-cc2b04
+%autosetup -n %{name}-%{version}%{?relc} -p1
 
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
@@ -326,6 +327,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sat Aug 11 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.0-2
+- Fix broken build on s390x
+
 * Tue Jul 24 2018 Gwyn Ciesla <limburgher@gmail.com> - 1:1.15.0-1
 - 1.15.0
 
