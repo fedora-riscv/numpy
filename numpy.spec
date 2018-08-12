@@ -234,13 +234,13 @@ ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/n
 
 %check
 pushd doc &> /dev/null
-PYTHONPATH="%{buildroot}%{python2_sitearch}" PYTHONDONTWRITEBYTECODE=1 \
+PYTHONPATH="%{buildroot}%{python2_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
     %{__python2} -m pytest -v --pyargs numpy
 popd &> /dev/null
 
 %if 0%{?with_python3}
 pushd doc &> /dev/null
-PYTHONPATH="%{buildroot}%{python3_sitearch}" PYTHONDONTWRITEBYTECODE=1 \
+PYTHONPATH="%{buildroot}%{python3_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
     %{__python3} -m pytest -v --pyargs numpy
 popd &> /dev/null
 
@@ -317,6 +317,7 @@ popd &> /dev/null
 * Wed Aug 29 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-2
 - Switch to pytest for running tests during check
 - Stop ignoring failures when running tests
+- Set PATH in check so that f2py tests work
 - Update docs to match release
 
 * Wed Aug 22 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-1
