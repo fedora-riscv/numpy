@@ -133,10 +133,6 @@ This package provides the complete documentation for NumPy.
 %prep
 %autosetup -n %{name}-%{version}%{?relc} -p1
 
-# workaround for rhbz#849713
-# http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
-rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
-
 %ifarch %{openblas_arches}
 # Use openblas pthreads as recommended by upstream (see comment in site.cfg.example)
 cat >> site.cfg <<EOF
@@ -319,6 +315,7 @@ popd &> /dev/null
 - Stop ignoring failures when running tests
 - Set PATH in check so that f2py tests work
 - Update docs to match release
+- Remove outdated workaround from rhbz#849713
 
 * Wed Aug 22 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-1
 - Update to latest version
