@@ -196,7 +196,7 @@ pushd %{py3dir}
 # skip-build currently broken, this works around it for now
 %ifarch %{openblas_arches}
 env OPENBLAS=%{_libdir} \
-%else 
+%else
 env ATLAS=%{_libdir} \
 %endif
     FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -235,13 +235,13 @@ ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/n
 %check
 pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python2_sitearch}" PYTHONDONTWRITEBYTECODE=1 \
-    %{__python2} -c "import pkg_resources, numpy ; numpy.test(verbose=2)"
+    %{__python2} -m pytest -v --pyargs numpy
 popd &> /dev/null
 
 %if 0%{?with_python3}
 pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python3_sitearch}" PYTHONDONTWRITEBYTECODE=1 \
-    %{__python3} -c "import pkg_resources, numpy ; numpy.test(verbose=2)"
+    %{__python3} -m pytest -v --pyargs numpy
 popd &> /dev/null
 
 %endif # with_python3
@@ -315,6 +315,8 @@ popd &> /dev/null
 
 %changelog
 * Wed Aug 29 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-2
+- Switch to pytest for running tests during check
+- Stop ignoring failures when running tests
 - Update docs to match release
 
 * Wed Aug 22 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-1
