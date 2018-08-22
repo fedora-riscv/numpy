@@ -19,7 +19,7 @@ Summary:        A fast multidimensional array facility for Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
-Source1:	https://docs.scipy.org/doc/numpy/numpy-html-1.14.5.zip
+Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.15.0.zip
 # https://github.com/numpy/numpy/pull/11711
 Patch0001:      0001-BUG-Fix-undefined-functions-on-big-endian-systems.patch
 
