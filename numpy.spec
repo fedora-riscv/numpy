@@ -10,8 +10,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.15.0
-Release:        2%{?dist}
+Version:        1.15.1
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -20,8 +20,6 @@ License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.15.0.zip
-# https://github.com/numpy/numpy/pull/11711
-Patch0001:      0001-BUG-Fix-undefined-functions-on-big-endian-systems.patch
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
 BuildRequires:  Cython python2-pytest
@@ -224,7 +222,7 @@ env ATLAS=%{_libdir} \
 pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py2 f2py.numpy
-#ln -s f2py2 f2py
+ln -s f2py2 f2py
 popd &> /dev/null
 #install -D -p -m 0644 docs/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
@@ -270,8 +268,6 @@ popd &> /dev/null
 %{python2_sitearch}/%{name}-*.egg-info
 %{_includedir}/numpy
 %exclude %{python2_sitearch}/%{name}/LICENSE.txt
-%{_bindir}/conv-template
-%{_bindir}/from-template
 
 %files -n python2-numpy-f2py
 %doc docs/f2py/*.html
@@ -318,6 +314,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Aug 22 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-1
+- Update to latest version
+
 * Sat Aug 11 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.0-2
 - Fix broken build on s390x
 - Remove bytecode produced by pytest
