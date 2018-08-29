@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.15.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -19,7 +19,7 @@ Summary:        A fast multidimensional array facility for Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
-Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.15.0.zip
+Source1:        https://docs.scipy.org/doc/numpy/numpy-html-%{version}.zip
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
 BuildRequires:  Cython python2-pytest
@@ -314,6 +314,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Aug 29 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-2
+- Update docs to match release
+
 * Wed Aug 22 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-1
 - Update to latest version
 
