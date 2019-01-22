@@ -10,8 +10,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.15.1
-Release:        2%{?dist}
+Version:        1.16.0
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -19,7 +19,7 @@ Summary:        A fast multidimensional array facility for Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
-Source1:        https://docs.scipy.org/doc/numpy/numpy-html-%{version}.zip
+Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.15.1.zip
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
 BuildRequires:  Cython python2-pytest
@@ -218,7 +218,7 @@ env ATLAS=%{_libdir} \
 pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py2 f2py.numpy
-ln -s f2py2 f2py
+#ln -s f2py2 f2py
 popd &> /dev/null
 #install -D -p -m 0644 docs/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
@@ -270,6 +270,7 @@ popd &> /dev/null
 #%%{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py2
+%{_bindir}/f2py2.7
 %{_bindir}/f2py.numpy
 %{python2_sitearch}/%{name}/f2py
 
@@ -301,6 +302,7 @@ popd &> /dev/null
 
 %files -n python3-numpy-f2py
 %{_bindir}/f2py3
+%{_bindir}/f2py3.7
 %{python3_sitearch}/%{name}/f2py
 
 %files -n python3-numpy-doc
@@ -310,6 +312,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Jan 22 2019 Gwyn Ciesla <limburgher@gmail.com> - 1:1.16.0-1
+- 1.16.0.
+
 * Wed Aug 29 2018 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.15.1-2
 - Switch to pytest for running tests during check
 - Stop ignoring failures when running tests
