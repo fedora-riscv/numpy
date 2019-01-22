@@ -229,6 +229,7 @@ ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/n
 
 
 %check
+%if %{_arch} != s390x
 pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python2_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
     %{__python2} -m pytest -v --pyargs numpy
@@ -239,6 +240,7 @@ pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python3_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
     %{__python3} -m pytest -v --pyargs numpy
 popd &> /dev/null
+%endif
 
 %endif # with_python3
 
