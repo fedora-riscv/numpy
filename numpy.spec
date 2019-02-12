@@ -157,6 +157,8 @@ cp -a . %{py3dir}
 %endif
 
 %build
+%set_build_flags
+
 %if 0%{?with_python3}
 pushd %{py3dir}
 %ifarch %{openblas_arches}
