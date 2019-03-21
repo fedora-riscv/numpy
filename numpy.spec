@@ -274,7 +274,7 @@ popd &> /dev/null
 #%%{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py2
-%{_bindir}/f2py2.7
+%{_bindir}/f2py%{python2_version}
 %{_bindir}/f2py.numpy
 %{python2_sitearch}/%{name}/f2py
 
@@ -306,7 +306,7 @@ popd &> /dev/null
 
 %files -n python3-numpy-f2py
 %{_bindir}/f2py3
-%{_bindir}/f2py3.7
+%{_bindir}/f2py%{python3_version}
 %{python3_sitearch}/%{name}/f2py
 
 %files -n python3-numpy-doc
