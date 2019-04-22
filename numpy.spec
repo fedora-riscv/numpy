@@ -10,7 +10,7 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.16.2
+Version:        1.16.3
 Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
@@ -19,7 +19,7 @@ Summary:        A fast multidimensional array facility for Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
-Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.15.1.zip
+Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.16.1.zip
 
 BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
 BuildRequires:  Cython python2-pytest
@@ -316,6 +316,9 @@ popd &> /dev/null
 
 
 %changelog
+* Mon Apr 22 2019 Gwyn Ciesla <gwync@protonmail.com> - 1:1.16.3-1
+- 1.16.3.
+
 * Tue Feb 26 2019 Gwyn Ciesla <gwync@protonmail.com> - 1:1.16.2-1
 - 1.16.2.
 
