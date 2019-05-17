@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.16.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -137,8 +137,8 @@ This package provides the complete documentation for NumPy.
 # Use openblas pthreads as recommended by upstream (see comment in site.cfg.example)
 cat >> site.cfg <<EOF
 [openblas]
+libraries = openblasp
 library_dirs = %{_libdir}
-openblas_libs = openblasp
 EOF
 %else
 # Atlas 3.10 library names
@@ -316,6 +316,9 @@ popd &> /dev/null
 
 
 %changelog
+* Thu May 16 2019 Orion Poplawski <orion@nwra.com> - 1:1.16.3-2
+- Build only with openblasp (bugz#1709161)
+
 * Mon Apr 22 2019 Gwyn Ciesla <gwync@protonmail.com> - 1:1.16.3-1
 - 1.16.3.
 
