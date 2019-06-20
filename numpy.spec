@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.16.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -225,8 +225,8 @@ popd &> /dev/null
 #install -D -p -m 0644 docs/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
 #symlink for includes, BZ 185079
-mkdir -p %{buildroot}/usr/include
-ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/numpy
+mkdir -p %{buildroot}%{_includedir}
+ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}/numpy
 
 
 
@@ -316,6 +316,9 @@ popd &> /dev/null
 
 
 %changelog
+* Thu Jun 20 2019 Kalev Lember <klember@redhat.com> - 1:1.16.4-2
+- Avoid hardcoding /usr prefix
+
 * Tue May 28 2019 Gwyn Ciesla <gwync@protonmail.com> - 1:1.16.4-1
 - 1.16.4
 
