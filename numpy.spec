@@ -227,8 +227,8 @@ popd &> /dev/null
 #install -D -p -m 0644 docs/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
 #symlink for includes, BZ 185079
-mkdir -p %{buildroot}/usr/include
-ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/numpy
+mkdir -p %{buildroot}%{_includedir}
+ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}/numpy
 
 
 
