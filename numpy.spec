@@ -128,7 +128,7 @@ BuildArch:	noarch
 %description -n python3-numpy-doc
 This package provides the complete documentation for NumPy.
 
-%endif # with_python3
+%endif
 
 %prep
 %autosetup -n %{name}-%{version}%{?relc} -p1
@@ -170,7 +170,7 @@ env ATLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py build
 popd
-%endif # with _python3
+%endif
 
 %ifarch %{openblas_arches}
 env OPENBLAS=%{_libdir} \
@@ -205,7 +205,7 @@ popd &> /dev/null
 
 popd
 
-%endif # with_python3
+%endif
 
 #%%{__python2} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
@@ -232,19 +232,21 @@ ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 %check
 %if %{_arch} != s390x
-pushd doc &> /dev/null
-PYTHONPATH="%{buildroot}%{python2_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
-    %{__python2} -m pytest -v --pyargs numpy
-popd &> /dev/null
+#pushd doc &> /dev/null
+#PYTHONPATH="%{buildroot}%{python2_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
+#    %{__python2} -m pytest -v --pyargs numpy
+#popd &> /dev/null
+python2 runtests.py
 
 %if 0%{?with_python3}
-pushd doc &> /dev/null
-PYTHONPATH="%{buildroot}%{python3_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
-    %{__python3} -m pytest -v --pyargs numpy
-popd &> /dev/null
+#pushd doc &> /dev/null
+#PYTHONPATH="%{buildroot}%{python3_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
+#    %{__python3} -m pytest -v --pyargs numpy
+#popd &> /dev/null
+python3 runtests.py
 %endif
 
-%endif # with_python3
+%endif
 
 
 %files -n python2-numpy
@@ -312,7 +314,7 @@ popd &> /dev/null
 %files -n python3-numpy-doc
 %doc docs/*
 
-%endif # with_python3
+%endif
 
 
 %changelog
