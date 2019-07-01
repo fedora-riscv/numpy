@@ -231,7 +231,7 @@ ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 
 %check
-%if %{_arch} != s390x
+%if %{_arch} != s390x && %{_arch} != ppc64le
 #pushd doc &> /dev/null
 #PYTHONPATH="%{buildroot}%{python2_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
 #    %{__python2} -m pytest -v --pyargs numpy
