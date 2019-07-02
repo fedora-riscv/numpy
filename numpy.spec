@@ -132,6 +132,9 @@ This package provides the complete documentation for NumPy.
 %prep
 %autosetup -n %{name}-%{version}%{?relc} -p1
 
+# Force re-cythonization (ifed for PKG-INFO presence in setup.py)
+rm PKG-INFO
+
 %ifarch %{openblas_arches}
 # Use openblas pthreads as recommended by upstream (see comment in site.cfg.example)
 cat >> site.cfg <<EOF
