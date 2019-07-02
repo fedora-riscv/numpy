@@ -94,7 +94,6 @@ License:        BSD
 %{?python_provide:%python_provide python3-numpy}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
-BuildRequires:  python3-nose
 BuildRequires:  python3-pytest
 
 %description -n python3-numpy
