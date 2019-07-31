@@ -1,33 +1,19 @@
-%if 0%{?fedora} || 0%{?rhel} > 7
-%global with_python3 1
-%else
-%{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-%endif
-
 #uncomment next line for a release candidate or a beta
 #%%global relc rc1
 
 %global modname numpy
 
 Name:           numpy
-Version:        1.16.4
-Release:        3%{?dist}
+Version:        1.17.0
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
-License:        BSD and Python
+License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
-Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.16.1.zip
-
-BuildRequires:  python2-devel lapack-devel python2-setuptools gcc-gfortran python2-nose
-BuildRequires:  Cython python2-pytest
-%ifarch %{openblas_arches}
-BuildRequires: openblas-devel
-%else
-BuildRequires: atlas-devel
-%endif
+Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.17.0.zip
 
 
 %description
@@ -43,50 +29,6 @@ basic linear algebra and random number generation. Also included in
 this package is a version of f2py that works properly with NumPy.
 
 
-%package -n python2-numpy
-Summary:        A fast multidimensional array facility for Python
-Requires:       python2-nose
-%{?python_provide:%python_provide python2-%{modname}}
-# General provides of plain 'numpy' that is in use by 1 package as of F24
-Provides:       numpy = %{epoch}:%{version}-%{release}
-Provides:       numpy%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes:      numpy < 1:1.10.1-3
-%description -n python2-numpy
-NumPy is a general-purpose array-processing package designed to
-efficiently manipulate large multi-dimensional arrays of arbitrary
-records without sacrificing too much speed for small multi-dimensional
-arrays.  NumPy is built on the Numeric code base and adds features
-introduced by numarray as well as an extended C-API and the ability to
-create arrays of arbitrary type.
-
-There are also basic facilities for discrete fourier transform,
-basic linear algebra and random number generation. Also included in
-this package is a version of f2py that works properly with NumPy.
-
-
-%package -n python2-numpy-f2py
-Summary:        f2py for numpy
-Requires:       %{name} = %{epoch}:%{version}-%{release}
-Requires:       python2-devel
-Provides:       f2py = %{epoch}:%{version}-%{release}
-Provides:       numpy-f2py = %{epoch}:%{version}-%{release}
-Obsoletes:      numpy-f2py < 1:1.10.1-3
-%{?python_provide:%python_provide python2-numpy-f2py}
-
-
-%description -n python2-numpy-f2py
-This package includes a version of f2py that works properly with NumPy.
-
-
-%package -n python2-numpy-doc
-Summary:	Documentation for numpy
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-BuildArch:	noarch
-
-%description -n python2-numpy-doc
-This package provides the complete documentation for NumPy.
-
-%if 0%{?with_python3}
 %package -n python3-numpy
 Summary:        A fast multidimensional array facility for Python
 
@@ -95,6 +37,14 @@ License:        BSD
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-pytest
+BuildRequires:  python3-Cython
+BuildRequires:  gcc-gfortran gcc
+BuildRequires:  lapack-devel
+%ifarch %{openblas_arches}
+BuildRequires: openblas-devel
+%else
+BuildRequires: atlas-devel
+%endif
 
 %description -n python3-numpy
 NumPy is a general-purpose array-processing package designed to
@@ -110,7 +60,7 @@ this package is a version of f2py that works properly with NumPy.
 
 %package -n python3-numpy-f2py
 Summary:        f2py for numpy
-Requires:       python3-numpy = %{epoch}:%{version}-%{release}
+Requires:       python3-numpy%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:       python3-devel
 Provides:       python3-f2py = %{version}-%{release}
 Obsoletes:      python3-f2py <= 2.45.241_1927
@@ -127,7 +77,6 @@ BuildArch:	noarch
 %description -n python3-numpy-doc
 This package provides the complete documentation for NumPy.
 
-%endif
 
 %prep
 %autosetup -n %{name}-%{version}%{?relc} -p1
@@ -153,16 +102,9 @@ EOF
 %endif
 %endif
 
-%if 0%{?with_python3}
-rm -rf %{py3dir}
-cp -a . %{py3dir}
-%endif
-
 %build
 %set_build_flags
 
-%if 0%{?with_python3}
-pushd %{py3dir}
 %ifarch %{openblas_arches}
 env OPENBLAS=%{_libdir} \
 %else
@@ -171,17 +113,6 @@ env ATLAS=%{_libdir} \
     BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py build
-popd
-%endif
-
-%ifarch %{openblas_arches}
-env OPENBLAS=%{_libdir} \
-%else
-env ATLAS=%{_libdir} \
-%endif
-    BLAS=%{_libdir} \
-    LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    %{__python2} setup.py build
 
 %install
 mkdir docs
@@ -189,9 +120,6 @@ pushd docs
 unzip %{SOURCE1}
 popd
 
-# first install python3 so the binaries are overwritten by the python2 ones
-%if 0%{?with_python3}
-pushd %{py3dir}
 #%%{__python3} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
 %ifarch %{openblas_arches}
@@ -203,89 +131,25 @@ env ATLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py install --root %{buildroot}
 pushd %{buildroot}%{_bindir} &> /dev/null
+ln -s f2py3 f2py.numpy
 popd &> /dev/null
 
-popd
+# Drop static lib.
+rm -f %{buildroot}%{python3_sitearch}/%{modname}/core/lib/libnpymath.a
 
-%endif
-
-#%%{__python2} setup.py install -O1 --skip-build --root %%{buildroot}
-# skip-build currently broken, this works around it for now
-%ifarch %{openblas_arches}
-env OPENBLAS=%{_libdir} \
-%else
-env ATLAS=%{_libdir} \
-%endif
-    FFTW=%{_libdir} BLAS=%{_libdir} \
-    LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    %{__python2} setup.py install --root %{buildroot}
-pushd %{buildroot}%{_bindir} &> /dev/null
-# symlink for anyone who was using f2py.numpy
-ln -s f2py2 f2py.numpy
-#ln -s f2py2 f2py
-popd &> /dev/null
-#install -D -p -m 0644 docs/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
 #symlink for includes, BZ 185079
 mkdir -p %{buildroot}%{_includedir}
-ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}/numpy
-
+ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}/numpy
 
 
 %check
 %if %{_arch} != s390x && %{_arch} != ppc64le
-#pushd doc &> /dev/null
-#PYTHONPATH="%{buildroot}%{python2_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
-#    %{__python2} -m pytest -v --pyargs numpy
-#popd &> /dev/null
-python2 runtests.py
-
-%if 0%{?with_python3}
-#pushd doc &> /dev/null
-#PYTHONPATH="%{buildroot}%{python3_sitearch}" PATH="%{buildroot}%{_bindir}:$PATH" PYTHONDONTWRITEBYTECODE=1 \
-#    %{__python3} -m pytest -v --pyargs numpy
-#popd &> /dev/null
 python3 runtests.py
-%endif
 
 %endif
 
 
-%files -n python2-numpy
-%license LICENSE.txt
-%doc THANKS.txt site.cfg.example
-%dir %{python2_sitearch}/%{name}
-%{python2_sitearch}/%{name}/*.py*
-%{python2_sitearch}/%{name}/core
-%{python2_sitearch}/%{name}/distutils
-%{python2_sitearch}/%{name}/doc
-%{python2_sitearch}/%{name}/fft
-%{python2_sitearch}/%{name}/lib
-%{python2_sitearch}/%{name}/linalg
-%{python2_sitearch}/%{name}/ma
-%{python2_sitearch}/%{name}/random
-%{python2_sitearch}/%{name}/testing
-%{python2_sitearch}/%{name}/tests
-%{python2_sitearch}/%{name}/compat
-%{python2_sitearch}/%{name}/matrixlib
-%{python2_sitearch}/%{name}/polynomial
-%{python2_sitearch}/%{name}-*.egg-info
-%{_includedir}/numpy
-%exclude %{python2_sitearch}/%{name}/LICENSE.txt
-
-%files -n python2-numpy-f2py
-%doc docs/f2py/*.html
-#%%{_mandir}/man*/*
-%{_bindir}/f2py
-%{_bindir}/f2py2
-%{_bindir}/f2py%{python2_version}
-%{_bindir}/f2py.numpy
-%{python2_sitearch}/%{name}/f2py
-
-%files -n python2-numpy-doc
-%doc docs/*
-
-%if 0%{?with_python3}
 %files -n python3-numpy
 %license LICENSE.txt
 %doc THANKS.txt site.cfg.example
@@ -307,19 +171,23 @@ python3 runtests.py
 %{python3_sitearch}/%{name}/polynomial
 %{python3_sitearch}/%{name}-*.egg-info
 %exclude %{python3_sitearch}/%{name}/LICENSE.txt
+%{_includedir}/numpy
 
 %files -n python3-numpy-f2py
+%{_bindir}/f2py
 %{_bindir}/f2py3
+%{_bindir}/f2py.numpy
 %{_bindir}/f2py%{python3_version}
 %{python3_sitearch}/%{name}/f2py
 
 %files -n python3-numpy-doc
 %doc docs/*
 
-%endif
-
 
 %changelog
+* Tue Jul 30 2019 Gwyn Ciesla <gwync@protonmail.com> 1:1.17.0-1
+- 1.17.0, split out Python 2.
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.16.4-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
