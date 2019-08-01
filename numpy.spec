@@ -5,7 +5,7 @@
 
 Name:           numpy
 Version:        1.17.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -34,6 +34,9 @@ Summary:        A fast multidimensional array facility for Python
 
 License:        BSD
 %{?python_provide:%python_provide python3-numpy}
+Provides:       libnpymath-static = %{epoch}:%{version}-%{release}
+Provides:       libnpymath-static%{?_isa} = %{epoch}:%{version}-%{release}
+
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-pytest
@@ -134,10 +137,6 @@ pushd %{buildroot}%{_bindir} &> /dev/null
 ln -s f2py3 f2py.numpy
 popd &> /dev/null
 
-# Drop static lib.
-rm -f %{buildroot}%{python3_sitearch}/%{modname}/core/lib/libnpymath.a
-
-
 #symlink for includes, BZ 185079
 mkdir -p %{buildroot}%{_includedir}
 ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}/numpy
@@ -185,6 +184,9 @@ python3 runtests.py
 
 
 %changelog
+* Thu Aug 01 2019 Miro Hrončok <mhroncok@redhat.com> - 1:1.17.0-2
+- Reintroduce libnpymath.a (#1735674)
+
 * Tue Jul 30 2019 Gwyn Ciesla <gwync@protonmail.com> 1:1.17.0-1
 - 1.17.0, split out Python 2.
 
