@@ -5,7 +5,7 @@
 
 Name:           numpy
 Version:        1.17.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -184,6 +184,9 @@ python3 runtests.py
 
 
 %changelog
+* Thu Aug 15 2019 Miro Hrončok <mhroncok@redhat.com> - 1:1.17.0-3
+- Rebuilt for Python 3.8
+
 * Thu Aug 01 2019 Miro Hrončok <mhroncok@redhat.com> - 1:1.17.0-2
 - Reintroduce libnpymath.a (#1735674)
 
