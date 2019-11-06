@@ -1,6 +1,9 @@
 #uncomment next line for a release candidate or a beta
 #%%global relc rc1
 
+# Simple way to disable tests
+%bcond_without tests
+
 %global modname numpy
 
 Name:           numpy
@@ -39,10 +42,12 @@ Provides:       libnpymath-static%{?_isa} = %{epoch}:%{version}-%{release}
 
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
-BuildRequires:  python3-pytest
 BuildRequires:  python3-Cython
 BuildRequires:  gcc-gfortran gcc
 BuildRequires:  lapack-devel
+%if %{with tests}
+BuildRequires:  python3-pytest
+%endif
 %ifarch %{openblas_arches}
 BuildRequires: openblas-devel
 %else
@@ -143,9 +148,10 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 
 %check
+%if %{with tests}
 %if %{_arch} != s390x && %{_arch} != ppc64le
 python3 runtests.py
-
+%endif
 %endif
 
 
