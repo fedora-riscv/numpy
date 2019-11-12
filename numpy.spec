@@ -8,7 +8,7 @@
 
 Name:           numpy
 Version:        1.17.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -17,6 +17,8 @@ License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.17.0.zip
+# https://github.com/numpy/numpy/issues/14767
+Patch0001:      https://github.com/numpy/numpy/pull/14769.patch
 
 
 %description
@@ -149,7 +151,7 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 %check
 %if %{with tests}
-%if %{_arch} != s390x && %{_arch} != ppc64le
+%if %{_arch} != ppc64le
 python3 runtests.py
 %endif
 %endif
@@ -190,6 +192,9 @@ python3 runtests.py
 
 
 %changelog
+* Mon Nov 11 2019 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.17.4-2
+- Backport patch for s390x failures
+
 * Mon Nov 11 2019 Gwyn Ciesla <gwync@protonmail.com> - 1:1.17.4-1
 - 1.17.4
 
