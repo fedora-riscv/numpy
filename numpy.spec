@@ -151,7 +151,10 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 %check
 %if %{with tests}
-%if %{_arch} != ppc64le
+%ifarch ppc64le
+# https://github.com/numpy/numpy/issues/14357
+python3 runtests.py -- -k 'not test_einsum_sums_cfloat64'
+%else
 python3 runtests.py
 %endif
 %endif
@@ -194,6 +197,7 @@ python3 runtests.py
 %changelog
 * Mon Nov 11 2019 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.17.4-2
 - Backport patch for s390x failures
+- Enable non-broken tests on ppc64le
 
 * Mon Nov 11 2019 Gwyn Ciesla <gwync@protonmail.com> - 1:1.17.4-1
 - 1.17.4
