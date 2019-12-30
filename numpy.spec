@@ -8,7 +8,7 @@
 
 Name:           numpy
 Version:        1.18.0
-Release:        1%{?dist}.%relc
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
