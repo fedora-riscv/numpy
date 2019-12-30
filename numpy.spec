@@ -1,5 +1,5 @@
 #uncomment next line for a release candidate or a beta
-#%%global relc rc1
+##%global relc rc1
 
 # Simple way to disable tests
 %bcond_without tests
@@ -7,8 +7,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.17.4
-Release:        2%{?dist}
+Version:        1.18.0
+Release:        1%{?dist}.%relc
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -17,8 +17,6 @@ License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.17.0.zip
-# https://github.com/numpy/numpy/issues/14767
-Patch0001:      https://github.com/numpy/numpy/pull/14769.patch
 
 
 %description
@@ -49,6 +47,7 @@ BuildRequires:  gcc-gfortran gcc
 BuildRequires:  lapack-devel
 %if %{with tests}
 BuildRequires:  python3-pytest
+BuildRequires:  python3-test
 %endif
 %ifarch %{openblas_arches}
 BuildRequires: openblas-devel
@@ -89,7 +88,7 @@ This package provides the complete documentation for NumPy.
 
 
 %prep
-%autosetup -n %{name}-%{version}%{?relc} -p1
+%autosetup -n %{name}-%{version} -p1
 
 # Force re-cythonization (ifed for PKG-INFO presence in setup.py)
 rm PKG-INFO
@@ -195,6 +194,9 @@ python3 runtests.py
 
 
 %changelog
+* Mon Dec 30 2019 Gwyn Ciesla <gwync@protonmail.com> - 1:1.18.0-1
+- 1.18.0
+
 * Mon Nov 11 2019 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.17.4-2
 - Backport patch for s390x failures
 - Enable non-broken tests on ppc64le
