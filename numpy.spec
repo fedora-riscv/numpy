@@ -2,7 +2,11 @@
 ##%global relc rc1
 
 # Simple way to disable tests
+%if 0%{?flatpak}
+%bcond_with tests
+%else
 %bcond_without tests
+%endif
 
 %global modname numpy
 
