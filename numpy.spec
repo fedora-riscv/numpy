@@ -11,8 +11,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.18.1
-Release:        2%{?dist}
+Version:        1.18.2
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -198,6 +198,9 @@ python3 runtests.py
 
 
 %changelog
+* Wed Mar 18 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.18.2-1
+- 1.18.2
+
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.18.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
