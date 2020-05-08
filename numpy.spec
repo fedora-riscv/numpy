@@ -12,7 +12,7 @@
 
 Name:           numpy
 Version:        1.18.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -166,7 +166,7 @@ python3 runtests.py
 %files -n python3-numpy
 %license LICENSE.txt
 %doc THANKS.txt site.cfg.example
-%{python3_sitearch}/%{name}/__pycache__/*
+%{python3_sitearch}/%{name}/__pycache__
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
 %{python3_sitearch}/%{name}/core
@@ -198,6 +198,9 @@ python3 runtests.py
 
 
 %changelog
+* Fri May 08 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.18.4-2
+- Own __pycache__ dir, 1833392
+
 * Sun May 03 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.18.4-1
 - 1.18.4
 
