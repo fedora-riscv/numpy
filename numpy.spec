@@ -1,5 +1,5 @@
 #uncomment next line for a release candidate or a beta
-##%global relc rc1
+#%%global relc rc1
 
 # Simple way to disable tests
 %if 0%{?flatpak}
@@ -11,15 +11,15 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.18.4
-Release:        2%{?dist}
+Version:        1.19.0
+Release:        0.rc1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
-Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}rc1/%{name}-%{version}rc1.tar.gz
 Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.17.0.zip
 
 
@@ -92,7 +92,7 @@ This package provides the complete documentation for NumPy.
 
 
 %prep
-%autosetup -n %{name}-%{version} -p1
+%autosetup -n %{name}-%{version}rc1 -p1
 
 # Force re-cythonization (ifed for PKG-INFO presence in setup.py)
 rm PKG-INFO
@@ -192,12 +192,15 @@ python3 runtests.py
 %{_bindir}/f2py.numpy
 %{_bindir}/f2py%{python3_version}
 %{python3_sitearch}/%{name}/f2py
-
+%{python3_sitearch}/%{name}/__init__.pxd
 %files -n python3-numpy-doc
 %doc docs/*
 
 
 %changelog
+* Tue May 19 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.0-0.rc1
+- 1.19.0 rc1
+
 * Fri May 08 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.18.4-2
 - Own __pycache__ dir, 1833392
 
