@@ -49,6 +49,7 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python3-Cython
 BuildRequires:  gcc-gfortran gcc
 BuildRequires:  lapack-devel
+BuildRequires:  python3-hypothesis
 %if %{with tests}
 BuildRequires:  python3-pytest
 BuildRequires:  python3-test
