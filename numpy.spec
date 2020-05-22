@@ -12,7 +12,7 @@
 
 Name:           numpy
 Version:        1.18.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -198,6 +198,9 @@ python3 runtests.py
 
 
 %changelog
+* Fri May 22 2020 Miro Hrončok <mhroncok@redhat.com> - 1:1.18.4-3
+- Rebuilt for Python 3.9
+
 * Fri May 08 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.18.4-2
 - Own __pycache__ dir, 1833392
 
