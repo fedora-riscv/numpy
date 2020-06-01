@@ -11,15 +11,15 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.18.4
-Release:        3%{?dist}
+Version:        1.19.0
+Release:        0.rc2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
-Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}rc2/%{name}-%{version}rc2.tar.gz
 Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.17.0.zip
 
 
@@ -49,6 +49,7 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python3-Cython
 BuildRequires:  gcc-gfortran gcc
 BuildRequires:  lapack-devel
+BuildRequires:  python3-hypothesis
 %if %{with tests}
 BuildRequires:  python3-pytest
 BuildRequires:  python3-test
@@ -92,7 +93,7 @@ This package provides the complete documentation for NumPy.
 
 
 %prep
-%autosetup -n %{name}-%{version} -p1
+%autosetup -n %{name}-%{version}rc2 -p1
 
 # Force re-cythonization (ifed for PKG-INFO presence in setup.py)
 rm PKG-INFO
@@ -185,6 +186,7 @@ python3 runtests.py
 %{python3_sitearch}/%{name}-*.egg-info
 %exclude %{python3_sitearch}/%{name}/LICENSE.txt
 %{_includedir}/numpy
+%{python3_sitearch}/%{name}/__init__.pxd
 
 %files -n python3-numpy-f2py
 %{_bindir}/f2py
@@ -198,6 +200,9 @@ python3 runtests.py
 
 
 %changelog
+* Mon Jun 01 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.0-0.rc2
+- 1.9.0 rc2
+
 * Fri May 22 2020 Miro Hrončok <mhroncok@redhat.com> - 1:1.18.4-3
 - Rebuilt for Python 3.9
 
