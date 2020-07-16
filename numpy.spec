@@ -12,7 +12,7 @@
 
 Name:           numpy
 Version:        1.19.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -42,6 +42,9 @@ License:        BSD
 %{?python_provide:%python_provide python3-numpy}
 Provides:       libnpymath-static = %{epoch}:%{version}-%{release}
 Provides:       libnpymath-static%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       numpy = %{epoch}:%{version}-%{release}
+Provides:       numpy%{?_isa} = %{epoch}:%{version}-%{release}
+Obsoletes:      numpy < 1:1.10.1-3
 
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
@@ -78,6 +81,9 @@ Requires:       python3-devel
 Provides:       python3-f2py = %{version}-%{release}
 Obsoletes:      python3-f2py <= 2.45.241_1927
 %{?python_provide:%python_provide python3-numpy-f2py}
+Provides:       f2py = %{epoch}:%{version}-%{release}
+Provides:       numpy-f2py = %{epoch}:%{version}-%{release}
+Obsoletes:      numpy-f2py < 1:1.10.1-3
 
 %description -n python3-numpy-f2py
 This package includes a version of f2py that works properly with NumPy.
@@ -199,6 +205,9 @@ python3 runtests.py
 
 
 %changelog
+* Thu Jul 16 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.0-2
+- Assume old-style numpy provides from python2-numpy
+
 * Mon Jun 22 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.0-1
 - 1.19.0 final.
 
