@@ -12,7 +12,7 @@
 
 Name:           numpy
 Version:        1.19.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -205,6 +205,9 @@ python3 runtests.py
 
 
 %changelog
+* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.19.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Wed Jul 22 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.1-1
 - 1.19.1
 
