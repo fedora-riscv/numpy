@@ -8,11 +8,19 @@
 %bcond_without tests
 %endif
 
+%if 0%{?fedora} >= 33 || 0%{?rhel} >= 9
+%global blaslib flexiblas
+%global blasvar %{nil}
+%else
+%global blaslib openblas
+%global blasvar p
+%endif
+
 %global modname numpy
 
 Name:           numpy
 Version:        1.19.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -56,11 +64,7 @@ BuildRequires:  python3-hypothesis
 BuildRequires:  python3-pytest
 BuildRequires:  python3-test
 %endif
-%ifarch %{openblas_arches}
-BuildRequires: openblas-devel
-%else
-BuildRequires: atlas-devel
-%endif
+BuildRequires: %{blaslib}-devel
 
 %description -n python3-numpy
 NumPy is a general-purpose array-processing package designed to
@@ -103,32 +107,18 @@ This package provides the complete documentation for NumPy.
 # Force re-cythonization (ifed for PKG-INFO presence in setup.py)
 rm PKG-INFO
 
-%ifarch %{openblas_arches}
+# openblas is provided by flexiblas by default; otherwise,
 # Use openblas pthreads as recommended by upstream (see comment in site.cfg.example)
 cat >> site.cfg <<EOF
 [openblas]
-libraries = openblasp
+libraries = %{blaslib}%{blasvar}
 library_dirs = %{_libdir}
 EOF
-%else
-# Atlas 3.10 library names
-%if 0%{?fedora} >= 21 || 0%{?rhel} > 7
-cat >> site.cfg <<EOF
-[atlas]
-library_dirs = %{_libdir}/atlas
-atlas_libs = satlas
-EOF
-%endif
-%endif
 
 %build
 %set_build_flags
 
-%ifarch %{openblas_arches}
 env OPENBLAS=%{_libdir} \
-%else
-env ATLAS=%{_libdir} \
-%endif
     BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py build
@@ -141,11 +131,7 @@ popd
 
 #%%{__python3} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
-%ifarch %{openblas_arches}
 env OPENBLAS=%{_libdir} \
-%else
-env ATLAS=%{_libdir} \
-%endif
     FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py install --root %{buildroot}
@@ -205,6 +191,9 @@ python3 runtests.py
 
 
 %changelog
+* Sun Aug 16 2020 Iñaki Úcar <iucar@fedoraproject.org> - 1:1.19.1-3
+- https://fedoraproject.org/wiki/Changes/FlexiBLAS_as_BLAS/LAPACK_manager
+
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.19.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
