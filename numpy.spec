@@ -19,8 +19,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.19.1
-Release:        3%{?dist}
+Version:        1.19.2
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -28,7 +28,7 @@ Summary:        A fast multidimensional array facility for Python
 License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
-Source1:        https://docs.scipy.org/doc/numpy/numpy-html-1.17.0.zip
+Source1:        https://numpy.org/doc/1.19/numpy-html.zip
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -178,6 +178,7 @@ python3 runtests.py
 %exclude %{python3_sitearch}/%{name}/LICENSE.txt
 %{_includedir}/numpy
 %{python3_sitearch}/%{name}/__init__.pxd
+%{python3_sitearch}/%{name}/__init__.cython-30.pxd
 
 %files -n python3-numpy-f2py
 %{_bindir}/f2py
@@ -191,6 +192,9 @@ python3 runtests.py
 
 
 %changelog
+* Thu Sep 10 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.2-1
+- 1.19.2
+
 * Sun Aug 16 2020 Iñaki Úcar <iucar@fedoraproject.org> - 1:1.19.1-3
 - https://fedoraproject.org/wiki/Changes/FlexiBLAS_as_BLAS/LAPACK_manager
 
