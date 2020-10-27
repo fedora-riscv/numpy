@@ -1,0 +1,135 @@
+From f73d993bcb03701f4e9146005a65eb482689140a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Nikola=20Forr=C3=B3?= <nforro@redhat.com>
+Date: Mon, 26 Oct 2020 18:54:22 +0100
+Subject: [PATCH] TST: Make test suite work in FIPS (140-2) Mode
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Tests using MD5 algorithms fail in FIPS Mode because MD5 is not FIPS
+compliant.
+
+Mark usages of MD5 in test suite as not being used for security
+purposes to overcome that.
+
+Signed-off-by: Nikola Forró <nforro@redhat.com>
+---
+ numpy/core/tests/test_regression.py          |  2 +-
+ numpy/random/tests/test_generator_mt19937.py | 10 +++++-----
+ numpy/random/tests/test_random.py            |  4 ++--
+ numpy/random/tests/test_randomstate.py       |  6 +++---
+ 4 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/numpy/core/tests/test_regression.py b/numpy/core/tests/test_regression.py
+index 2e731d4fa..4633174d9 100644
+--- a/numpy/core/tests/test_regression.py
++++ b/numpy/core/tests/test_regression.py
+@@ -1509,7 +1509,7 @@ class TestRegression:
+         from hashlib import md5
+ 
+         x = np.array([1, 2, 3], dtype=np.dtype('<i4'))
+-        assert_equal(md5(x).hexdigest(), '2a1dd1e1e59d0a384c26951e316cd7e6')
++        assert_equal(md5(x, usedforsecurity=False).hexdigest(), '2a1dd1e1e59d0a384c26951e316cd7e6')
+ 
+     def test_0d_string_scalar(self):
+         # Bug #1436; the following should succeed
+diff --git a/numpy/random/tests/test_generator_mt19937.py b/numpy/random/tests/test_generator_mt19937.py
+index 6be7d852b..9b166e3a2 100644
+--- a/numpy/random/tests/test_generator_mt19937.py
++++ b/numpy/random/tests/test_generator_mt19937.py
+@@ -507,14 +507,14 @@ class TestIntegers:
+                 val = random.integers(0, 6 - endpoint, size=1000, endpoint=endpoint,
+                                  dtype=dt).byteswap()
+ 
+-            res = hashlib.md5(val).hexdigest()
++            res = hashlib.md5(val, usedforsecurity=False).hexdigest()
+             assert_(tgt[np.dtype(dt).name] == res)
+ 
+         # bools do not depend on endianness
+         random = Generator(MT19937(1234))
+         val = random.integers(0, 2 - endpoint, size=1000, endpoint=endpoint,
+                          dtype=bool).view(np.int8)
+-        res = hashlib.md5(val).hexdigest()
++        res = hashlib.md5(val, usedforsecurity=False).hexdigest()
+         assert_(tgt[np.dtype(bool).name] == res)
+ 
+     def test_repeatability_broadcasting(self, endpoint):
+@@ -910,7 +910,7 @@ class TestRandomDist:
+         actual = random.choice(10000, 5000, replace=False)
+         if sys.byteorder != 'little':
+             actual = actual.byteswap()
+-        res = hashlib.md5(actual.view(np.int8)).hexdigest()
++        res = hashlib.md5(actual.view(np.int8), usedforsecurity=False).hexdigest()
+         assert_(choice_hash == res)
+ 
+     def test_bytes(self):
+@@ -2436,7 +2436,7 @@ def test_jumped(config):
+     key = mt19937.state["state"]["key"]
+     if sys.byteorder == 'big':
+         key = key.byteswap()
+-    md5 = hashlib.md5(key)
++    md5 = hashlib.md5(key, usedforsecurity=False)
+     assert mt19937.state["state"]["pos"] == config["initial"]["pos"]
+     assert md5.hexdigest() == config["initial"]["key_md5"]
+ 
+@@ -2444,7 +2444,7 @@ def test_jumped(config):
+     key = jumped.state["state"]["key"]
+     if sys.byteorder == 'big':
+         key = key.byteswap()
+-    md5 = hashlib.md5(key)
++    md5 = hashlib.md5(key, usedforsecurity=False)
+     assert jumped.state["state"]["pos"] == config["jumped"]["pos"]
+     assert md5.hexdigest() == config["jumped"]["key_md5"]
+ 
+diff --git a/numpy/random/tests/test_random.py b/numpy/random/tests/test_random.py
+index 276b5bc81..e49251af3 100644
+--- a/numpy/random/tests/test_random.py
++++ b/numpy/random/tests/test_random.py
+@@ -233,13 +233,13 @@ class TestRandint:
+             else:
+                 val = self.rfunc(0, 6, size=1000, dtype=dt).byteswap()
+ 
+-            res = hashlib.md5(val.view(np.int8)).hexdigest()
++            res = hashlib.md5(val.view(np.int8), usedforsecurity=False).hexdigest()
+             assert_(tgt[np.dtype(dt).name] == res)
+ 
+         # bools do not depend on endianness
+         np.random.seed(1234)
+         val = self.rfunc(0, 2, size=1000, dtype=bool).view(np.int8)
+-        res = hashlib.md5(val).hexdigest()
++        res = hashlib.md5(val, usedforsecurity=False).hexdigest()
+         assert_(tgt[np.dtype(bool).name] == res)
+ 
+     def test_int64_uint64_corner_case(self):
+diff --git a/numpy/random/tests/test_randomstate.py b/numpy/random/tests/test_randomstate.py
+index 23dbbed6a..aa53d9322 100644
+--- a/numpy/random/tests/test_randomstate.py
++++ b/numpy/random/tests/test_randomstate.py
+@@ -341,13 +341,13 @@ class TestRandint:
+             else:
+                 val = self.rfunc(0, 6, size=1000, dtype=dt).byteswap()
+ 
+-            res = hashlib.md5(val.view(np.int8)).hexdigest()
++            res = hashlib.md5(val.view(np.int8), usedforsecurity=False).hexdigest()
+             assert_(tgt[np.dtype(dt).name] == res)
+ 
+         # bools do not depend on endianness
+         random.seed(1234)
+         val = self.rfunc(0, 2, size=1000, dtype=bool).view(np.int8)
+-        res = hashlib.md5(val).hexdigest()
++        res = hashlib.md5(val, usedforsecurity=False).hexdigest()
+         assert_(tgt[np.dtype(bool).name] == res)
+ 
+     @pytest.mark.skipif(np.iinfo('l').max < 2**32,
+@@ -1987,7 +1987,7 @@ def test_integer_repeat(int_func):
+     val = f(*args, size=1000000)
+     if sys.byteorder != 'little':
+         val = val.byteswap()
+-    res = hashlib.md5(val.view(np.int8)).hexdigest()
++    res = hashlib.md5(val.view(np.int8), usedforsecurity=False).hexdigest()
+     assert_(res == md5)
+ 
+ 
+-- 
+2.26.2
+

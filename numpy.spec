@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.19.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -29,6 +29,8 @@ License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        https://numpy.org/doc/1.19/numpy-html.zip
+
+Patch0:         numpy-1.19.2-FIPS.patch
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -192,6 +194,9 @@ python3 runtests.py
 
 
 %changelog
+* Tue Oct 27 2020 Nikola Forró <nforro@redhat.com> - 1:1.19.2-2
+- Make test suite work in FIPS (140-2) Mode
+
 * Thu Sep 10 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.2-1
 - 1.19.2
 
