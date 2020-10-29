@@ -19,8 +19,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.19.2
-Release:        2%{?dist}
+Version:        1.19.3
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -194,6 +194,9 @@ python3 runtests.py
 
 
 %changelog
+* Thu Oct 29 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.3-1
+- 1.19.3
+
 * Tue Oct 27 2020 Nikola Forró <nforro@redhat.com> - 1:1.19.2-2
 - Make test suite work in FIPS (140-2) Mode
 
