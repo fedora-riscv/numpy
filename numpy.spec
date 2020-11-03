@@ -19,7 +19,7 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.19.3
+Version:        1.19.4
 Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
@@ -194,6 +194,9 @@ python3 runtests.py
 
 
 %changelog
+* Tue Nov 03 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.4-1
+- 1.19.4
+
 * Thu Oct 29 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.3-1
 - 1.19.3
 
