@@ -1,5 +1,5 @@
 #uncomment next line for a release candidate or a beta
-##%global relc rc1
+#%%global relc rc1
 
 # Simple way to disable tests
 %if 0%{?flatpak}
@@ -19,18 +19,16 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.19.4
-Release:        1%{?dist}
+Version:        1.20.0
+Release:        0.rc2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
-Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}rc2/%{name}-%{version}rc2.tar.gz
 Source1:        https://numpy.org/doc/1.19/numpy-html.zip
-
-Patch0:         numpy-1.19.2-FIPS.patch
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -61,10 +59,10 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python3-Cython
 BuildRequires:  gcc-gfortran gcc
 BuildRequires:  lapack-devel
+BuildRequires:  python3-hypothesis
 %if %{with tests}
 BuildRequires:  python3-pytest
 BuildRequires:  python3-test
-BuildRequires:  python3-hypothesis
 %endif
 BuildRequires: %{blaslib}-devel
 
@@ -104,7 +102,7 @@ This package provides the complete documentation for NumPy.
 
 
 %prep
-%autosetup -n %{name}-%{version} -p1
+%autosetup -n %{name}-%{version}rc2 -p1
 
 # Force re-cythonization (ifed for PKG-INFO presence in setup.py)
 rm PKG-INFO
@@ -181,6 +179,8 @@ python3 runtests.py
 %{_includedir}/numpy
 %{python3_sitearch}/%{name}/__init__.pxd
 %{python3_sitearch}/%{name}/__init__.cython-30.pxd
+%{python3_sitearch}/%{name}/py.typed
+%{python3_sitearch}/%{name}/typing/
 
 %files -n python3-numpy-f2py
 %{_bindir}/f2py
@@ -194,6 +194,9 @@ python3 runtests.py
 
 
 %changelog
+* Mon Dec 28 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.20.0-0.rc2
+- 1.20.0 rc2
+
 * Tue Nov 03 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.19.4-1
 - 1.19.4
 
