@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.20.0
-Release:        1.rc2%{?dist}
+Release:        0.1.rc2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -197,7 +197,7 @@ python3 runtests.py
 
 
 %changelog
-* Mon Jan 04 2021 Nikola Forró <nforro@redhat.com> - 1:1.20.0-1.rc2
+* Mon Jan 04 2021 Nikola Forró <nforro@redhat.com> - 1:1.20.0-0.1.rc2
 - Generate the main dispatcher config header into the build dir
 
 * Mon Dec 28 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.20.0-0.rc2
