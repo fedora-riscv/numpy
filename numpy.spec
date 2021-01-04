@@ -30,7 +30,7 @@ URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}rc2/%{name}-%{version}rc2.tar.gz
 Source1:        https://numpy.org/doc/1.19/numpy-html.zip
 
-https://github.com/numpy/numpy/pull/18100
+# https://github.com/numpy/numpy/pull/18100
 Patch0:         18100.patch
 
 %description
