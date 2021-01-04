@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.20.0
-Release:        0.rc2%{?dist}
+Release:        1.rc2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -29,6 +29,9 @@ License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}rc2/%{name}-%{version}rc2.tar.gz
 Source1:        https://numpy.org/doc/1.19/numpy-html.zip
+
+https://github.com/numpy/numpy/pull/18100
+Patch0:         18100.patch
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -194,6 +197,9 @@ python3 runtests.py
 
 
 %changelog
+* Mon Jan 04 2021 Nikola Forró <nforro@redhat.com> - 1:1.20.0-1.rc2
+- Generate the main dispatcher config header into the build dir
+
 * Mon Dec 28 2020 Gwyn Ciesla <gwync@protonmail.com> - 1:1.20.0-0.rc2
 - 1.20.0 rc2
 
