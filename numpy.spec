@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.20.0
-Release:        0.1.rc2%{?dist}
+Release:        0.2.rc2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -197,6 +197,9 @@ python3 runtests.py
 
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.20.0-0.2.rc2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Mon Jan 04 2021 Nikola Forró <nforro@redhat.com> - 1:1.20.0-0.1.rc2
 - Generate the main dispatcher config header into the build dir
 
