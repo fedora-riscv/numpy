@@ -20,18 +20,15 @@
 
 Name:           numpy
 Version:        1.20.0
-Release:        0.2.rc2%{?dist}
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
-Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}rc2/%{name}-%{version}rc2.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        https://numpy.org/doc/1.19/numpy-html.zip
-
-# https://github.com/numpy/numpy/pull/18100
-Patch0:         18100.patch
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -105,7 +102,7 @@ This package provides the complete documentation for NumPy.
 
 
 %prep
-%autosetup -n %{name}-%{version}rc2 -p1
+%autosetup -n %{name}-%{version} -p1
 
 # Force re-cythonization (ifed for PKG-INFO presence in setup.py)
 rm PKG-INFO
@@ -197,6 +194,9 @@ python3 runtests.py
 
 
 %changelog
+* Mon Feb 01 2021 Gwyn Ciesla <gwync@protonmail.com> - 1:1.20.0-1
+- 1.20.0 final.
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.20.0-0.2.rc2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
