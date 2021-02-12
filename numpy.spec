@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.20.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -59,8 +59,8 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python3-Cython
 BuildRequires:  gcc-gfortran gcc
 BuildRequires:  lapack-devel
-BuildRequires:  python3-hypothesis
 %if %{with tests}
+BuildRequires:  python3-hypothesis
 BuildRequires:  python3-pytest
 BuildRequires:  python3-test
 %endif
@@ -194,6 +194,9 @@ python3 runtests.py
 
 
 %changelog
+* Fri Feb 12 2021 Nikola Forró <nforro@redhat.com> - 1:1.20.1-2
+- Fix build requirements, hypothesis is a test dependency
+
 * Mon Feb 08 2021 Gwyn Ciesla <gwync@protonmail.com> 1:1.20.1-1
 - 1.21.1
 
