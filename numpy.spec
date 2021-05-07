@@ -30,6 +30,11 @@ URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        https://numpy.org/doc/1.19/numpy-html.zip
 
+# Adjust NumPy float hashing to Python's slightly changed hash (Python 3.10.0b1+)
+# Merged upstream, rebased slightly
+# https://github.com/numpy/numpy/commit/ad2a73c18d.patch
+Patch1:         ad2a73c18d.patch
+
 %description
 NumPy is a general-purpose array-processing package designed to
 efficiently manipulate large multi-dimensional arrays of arbitrary
