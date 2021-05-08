@@ -35,6 +35,11 @@ Source1:        https://numpy.org/doc/1.19/numpy-html.zip
 # https://github.com/numpy/numpy/commit/ad2a73c18d.patch
 Patch1:         ad2a73c18d.patch
 
+# xfail TestCond.test_nan unconditionally
+# it fails in many build configurations, including OpenBLAS 0.3.15
+# Merged upstream
+Patch2:         https://github.com/numpy/numpy/commit/d490589e01.patch
+
 %description
 NumPy is a general-purpose array-processing package designed to
 efficiently manipulate large multi-dimensional arrays of arbitrary
@@ -201,6 +206,7 @@ python3 runtests.py
 %changelog
 * Fri May 07 2021 Gwyn Ciesla <gwync@protonmail.com> - 1:1.20.1-3
 - Python 3.10 fix.
+- Xfail TestCond.test_nan.
 
 * Fri Feb 12 2021 Nikola Forró <nforro@redhat.com> - 1:1.20.1-2
 - Fix build requirements, hypothesis is a test dependency
