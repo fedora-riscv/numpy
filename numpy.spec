@@ -19,7 +19,7 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.21.1
+Version:        1.21.5
 Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
@@ -57,7 +57,7 @@ Obsoletes:      numpy < 1:1.10.1-3
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-Cython
-BuildRequires:  gcc-gfortran gcc
+BuildRequires:  gcc-gfortran gcc gcc-c++
 BuildRequires:  lapack-devel
 %if %{with tests}
 BuildRequires:  python3-hypothesis
@@ -194,6 +194,9 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 
 %changelog
+* Wed Dec 22 2021 Gwyn Ciesla <gwync@protonmail.com> - 1:1.21.5-1
+- 1.21.5
+
 * Thu Aug 05 2021 Gwyn Ciesla <gwync@protonmail.com> - 1:1.21.1-1
 - 1.21.1, disabing tests as they depend on .coveragerc, not shipped.
 
