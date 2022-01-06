@@ -19,7 +19,7 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.21.5
+Version:        1.22.0
 Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
@@ -181,6 +181,7 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 %{python3_sitearch}/%{name}/__init__.cython-30.pxd
 %{python3_sitearch}/%{name}/py.typed
 %{python3_sitearch}/%{name}/typing/
+%{python3_sitearch}/%{name}/array_api/
 
 %files -n python3-numpy-f2py
 %{_bindir}/f2py
@@ -194,6 +195,9 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 
 %changelog
+* Thu Jan 06 2022 Gwyn Ciesla <gwync@protonmail.com> - 1:1.22.0-1
+- 1.22.0
+
 * Wed Dec 22 2021 Gwyn Ciesla <gwync@protonmail.com> - 1:1.21.5-1
 - 1.21.5
 
