@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.22.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -195,6 +195,9 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 
 %changelog
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.22.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
 * Thu Jan 06 2022 Gwyn Ciesla <gwync@protonmail.com> - 1:1.22.0-1
 - 1.22.0
 
