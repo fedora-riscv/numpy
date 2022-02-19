@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.22.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -144,15 +144,12 @@ mkdir -p %{buildroot}%{_includedir}
 ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}/numpy
 
 
-#%check  Re-enable when .coveragerc is shipped: https://github.com/numpy/numpy/issues/19617
-#%if %{with tests}
-#%ifarch ppc64le
-## https://github.com/numpy/numpy/issues/14357
-#python3 runtests.py -- -k 'not test_einsum_sums_cfloat64'
-#%else
-#python3 runtests.py
-#%endif
-#%endif
+%check
+%if %{with tests}
+# This test is unnecessary now that ppc64le has switched long doubles to IEEE format.
+# https://github.com/numpy/numpy/issues/21094
+python3 runtests.py -- -ra -k 'not test_ppc64_ibm_double_double128'
+%endif
 
 
 %files -n python3-numpy
@@ -195,6 +192,9 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 
 %changelog
+* Sat Feb 19 2022 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.22.0-3
+- Re-enable tests
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.22.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
