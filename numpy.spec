@@ -146,9 +146,10 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 %check
 %if %{with tests}
+export PYTHONPATH=%{buildroot}%{python3_sitearch}
 # This test is unnecessary now that ppc64le has switched long doubles to IEEE format.
 # https://github.com/numpy/numpy/issues/21094
-python3 runtests.py -- -ra -k 'not test_ppc64_ibm_double_double128'
+python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128'
 %endif
 
 
