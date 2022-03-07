@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.22.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -146,6 +146,14 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 
 %check
 %if %{with tests}
+# core/tests/test_cython.py and random/tests/test_extending.py
+# fail due to setuptools-bundled distutils' LooseVersion issue:
+# https://github.com/pypa/distutils/issues/122
+# This can be worked around by setting the environment variable to point
+# to distutils from Python's standard library instead.
+# The workaround may be removed once numpy includes the commit removing
+# LooseVersion into release: https://github.com/numpy/numpy/pull/21000
+export SETUPTOOLS_USE_DISTUTILS=stdlib
 export PYTHONPATH=%{buildroot}%{python3_sitearch}
 # This test is unnecessary now that ppc64le has switched long doubles to IEEE format.
 # https://github.com/numpy/numpy/issues/21094
@@ -193,6 +201,10 @@ python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128'
 
 
 %changelog
+* Mon Mar 07 2022 Karolina Surma <ksurma@redhat.com> - 1:1.22.0-4
+- Work around the test failures with setuptools >= 60.x by using the Python's
+  standard library distutils
+
 * Sat Feb 19 2022 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.22.0-3
 - Re-enable tests
 
