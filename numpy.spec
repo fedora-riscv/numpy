@@ -121,6 +121,7 @@ EOF
 env OPENBLAS=%{_libdir} \
     BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
+    SETUPTOOLS_USE_DISTUTILS=stdlib
     %{__python3} setup.py build
 
 %install
@@ -134,6 +135,7 @@ popd
 env OPENBLAS=%{_libdir} \
     FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
+    SETUPTOOLS_USE_DISTUTILS=stdlib
     %{__python3} setup.py install --root %{buildroot}
 pushd %{buildroot}%{_bindir} &> /dev/null
 ln -s f2py3 f2py.numpy
@@ -204,6 +206,7 @@ python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128'
 * Mon Mar 07 2022 Karolina Surma <ksurma@redhat.com> - 1:1.22.0-4
 - Work around the test failures with setuptools >= 60.x by using the Python's
   standard library distutils
+- Build numpy using Python's standard library distutils
 
 * Sat Feb 19 2022 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 1:1.22.0-3
 - Re-enable tests
