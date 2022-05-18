@@ -1,0 +1,54 @@
+From 42f3203a45231b338cf1a4c77fe81ca4b7fef4ef Mon Sep 17 00:00:00 2001
+From: Bas van Beek <43369155+BvB93@users.noreply.github.com>
+Date: Fri, 20 May 2022 02:42:37 +0200
+Subject: [PATCH 1/2] TST,TYP: Fix a python 3.11 failure for the `GenericAlias`
+ tests
+
+---
+ numpy/typing/tests/test_generic_alias.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/numpy/typing/tests/test_generic_alias.py b/numpy/typing/tests/test_generic_alias.py
+index 52d3deae4ed..267230a95d6 100644
+--- a/numpy/typing/tests/test_generic_alias.py
++++ b/numpy/typing/tests/test_generic_alias.py
+@@ -20,11 +20,11 @@
+ if sys.version_info >= (3, 9):
+     DType_ref = types.GenericAlias(np.dtype, (ScalarType,))
+     NDArray_ref = types.GenericAlias(np.ndarray, (Any, DType_ref))
+-    FuncType = Callable[[Union[_GenericAlias, types.GenericAlias]], Any]
++    FuncType = Callable[["_GenericAlias | types.GenericAlias"], Any]
+ else:
+     DType_ref = Any
+     NDArray_ref = Any
+-    FuncType = Callable[[_GenericAlias], Any]
++    FuncType = Callable[["_GenericAlias"], Any]
+ 
+ GETATTR_NAMES = sorted(set(dir(np.ndarray)) - _GenericAlias._ATTR_EXCEPTIONS)
+ 
+
+From 7c98e8c18c147bcbf6f9344376ca380a5d8f6c7b Mon Sep 17 00:00:00 2001
+From: Bas van Beek <b.f.van.beek@vu.nl>
+Date: Fri, 20 May 2022 19:24:38 +0200
+Subject: [PATCH 2/2] DOC: Add a note about `npt._GenericAlias` >=3.11
+ stability
+
+---
+ numpy/typing/tests/test_generic_alias.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/numpy/typing/tests/test_generic_alias.py b/numpy/typing/tests/test_generic_alias.py
+index 267230a95d6..ae55ef43951 100644
+--- a/numpy/typing/tests/test_generic_alias.py
++++ b/numpy/typing/tests/test_generic_alias.py
+@@ -17,6 +17,10 @@
+ DType = _GenericAlias(np.dtype, (ScalarType,))
+ NDArray = _GenericAlias(np.ndarray, (Any, DType))
+ 
++# NOTE: The `npt._GenericAlias` *class* isn't quite stable on python >=3.11.
++# This is not a problem during runtime (as it's 3.8-exclusive), but we still
++# need it for the >=3.9 in order to verify its semantics match
++# `types.GenericAlias` replacement. xref numpy/numpy#21526
+ if sys.version_info >= (3, 9):
+     DType_ref = types.GenericAlias(np.dtype, (ScalarType,))
+     NDArray_ref = types.GenericAlias(np.ndarray, (Any, DType_ref))

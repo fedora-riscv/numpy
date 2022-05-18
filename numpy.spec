@@ -29,6 +29,8 @@ License:        BSD and Python and ASL 2.0
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        https://numpy.org/doc/1.19/numpy-html.zip
+# Upstream issue: https://github.com/numpy/numpy/issues/21526
+Patch:          21543.patch
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -157,9 +159,13 @@ ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}
 # LooseVersion into release: https://github.com/numpy/numpy/pull/21000
 export SETUPTOOLS_USE_DISTUTILS=stdlib
 export PYTHONPATH=%{buildroot}%{python3_sitearch}
-# This test is unnecessary now that ppc64le has switched long doubles to IEEE format.
+# test_ppc64_ibm_double_double128 is unnecessary now that ppc64le has switched long doubles to IEEE format.
 # https://github.com/numpy/numpy/issues/21094
-python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128'
+# test_to_int_scalar is disabled for compatibility with Python 3.11
+# Downstream issue: https://bugzilla.redhat.com/show_bug.cgi?id=2046668
+# Some GenericAlias tests are still failing, even with upstream patch, hence we skip them below.
+# Upstream issue: https://github.com/numpy/numpy/issues/21526
+python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 and not test_to_int_scalar and not (GenericAlias and test_pass and __dir__)'
 %endif
 
 
