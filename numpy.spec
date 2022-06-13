@@ -165,7 +165,11 @@ export PYTHONPATH=%{buildroot}%{python3_sitearch}
 # Downstream issue: https://bugzilla.redhat.com/show_bug.cgi?id=2046668
 # Some GenericAlias tests are still failing, even with upstream patch, hence we skip them below.
 # Upstream issue: https://github.com/numpy/numpy/issues/21526
-python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 and not test_to_int_scalar and not (GenericAlias and test_pass and __dir__)'
+%ifarch %{ix86}
+# Weird RuntimeWarnings on i686, siilar to https://github.com/numpy/numpy/issues/13173
+%global ix86_k and not test_vector_matrix_values and not test_matrix_vector_values
+%endif
+python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 and not test_to_int_scalar and not (GenericAlias and test_pass and __dir__)%{?ix86_k}'
 %endif
 
 
