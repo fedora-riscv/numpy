@@ -1,0 +1,45 @@
+From d3ecbf3db9d4bea1426d5b90a7bcb4838cfa2bca Mon Sep 17 00:00:00 2001
+From: Bas van Beek <43369155+BvB93@users.noreply.github.com>
+Date: Thu, 14 Jul 2022 12:44:40 +0200
+Subject: [PATCH] MAINT: Do not let `_GenericAlias` wrap the underlying classes
+ `__class__` attribute
+
+Adapt to the 3.11b4 changes introduced in https://github.com/python/cpython/pull/93754
+---
+ numpy/typing/_generic_alias.py           | 1 +
+ numpy/typing/tests/test_generic_alias.py | 5 ++++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/numpy/typing/_generic_alias.py b/numpy/typing/_generic_alias.py
+index cd37dd5..16cd893 100644
+--- a/numpy/typing/_generic_alias.py
++++ b/numpy/typing/_generic_alias.py
+@@ -222,6 +222,7 @@ class _GenericAlias:
+         "__deepcopy__",
+         "__unpacked__",
+         "__typing_unpacked_tuple_args__",
++        "__class__",
+     })
+ 
+     def __getattribute__(self, name: str) -> Any:
+diff --git a/numpy/typing/tests/test_generic_alias.py b/numpy/typing/tests/test_generic_alias.py
+index 786ceec..1c09097 100644
+--- a/numpy/typing/tests/test_generic_alias.py
++++ b/numpy/typing/tests/test_generic_alias.py
+@@ -122,9 +122,12 @@ class TestGenericAlias:
+         # and they are thus now longer equivalent
+         ("__ne__", lambda n: n != next(iter(n)), ("beta", 1)),
+ 
+-        # >= beta3 stuff
++        # >= beta3
+         ("__typing_unpacked_tuple_args__",
+          lambda n: n.__typing_unpacked_tuple_args__, ("beta", 3)),
++
++        # >= beta4
++        ("__class__", lambda n: n.__class__ == type(n), ("beta", 4)),
+     ])
+     def test_py311_features(
+         self,
+-- 
+2.35.3
+

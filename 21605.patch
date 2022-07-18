@@ -1,0 +1,284 @@
+From 91bd7db8e43724acf947c06a42d4c8b07c8ffca4 Mon Sep 17 00:00:00 2001
+From: Bas van Beek <b.f.van.beek@vu.nl>
+Date: Wed, 25 May 2022 15:48:22 +0200
+Subject: [PATCH] MAINT: Adapt the `npt._GenericAlias` backport to Python 3.11
+ `types.GenericAlias` changes
+
+---
+ numpy/typing/_generic_alias.py | 49 +++++++++++++++++++++++++++++-----
+ 1 file changed, 42 insertions(+), 7 deletions(-)
+
+diff --git a/numpy/typing/_generic_alias.py b/numpy/typing/_generic_alias.py
+index 1eb2c8c..cd37dd5 100644
+--- a/numpy/typing/_generic_alias.py
++++ b/numpy/typing/_generic_alias.py
+@@ -70,7 +70,7 @@ def _reconstruct_alias(alias: _T, parameters: Iterator[TypeVar]) -> _T:
+         args.append(value)
+ 
+     cls = type(alias)
+-    return cls(alias.__origin__, tuple(args))
++    return cls(alias.__origin__, tuple(args), alias.__unpacked__)
+ 
+ 
+ class _GenericAlias:
+@@ -86,7 +86,14 @@ class _GenericAlias:
+ 
+     """
+ 
+-    __slots__ = ("__weakref__", "_origin", "_args", "_parameters", "_hash")
++    __slots__ = (
++        "__weakref__",
++        "_origin",
++        "_args",
++        "_parameters",
++        "_hash",
++        "_starred",
++    )
+ 
+     @property
+     def __origin__(self) -> type:
+@@ -101,14 +108,27 @@ class _GenericAlias:
+         """Type variables in the ``GenericAlias``."""
+         return super().__getattribute__("_parameters")
+ 
++    @property
++    def __unpacked__(self) -> bool:
++        return super().__getattribute__("_starred")
++
++    @property
++    def __typing_unpacked_tuple_args__(self) -> tuple[object, ...] | None:
++        # NOTE: This should return `__args__` if `__origin__` is a tuple,
++        # which should never be the case with how `_GenericAlias` is used
++        # within numpy
++        return None
++
+     def __init__(
+         self,
+         origin: type,
+         args: object | Tuple[object, ...],
++        starred: bool = False,
+     ) -> None:
+         self._origin = origin
+         self._args = args if isinstance(args, tuple) else (args,)
+         self._parameters = tuple(_parse_parameters(self.__args__))
++        self._starred = starred
+ 
+     @property
+     def __call__(self) -> type:
+@@ -116,10 +136,10 @@ class _GenericAlias:
+ 
+     def __reduce__(self: _T) -> Tuple[
+         Type[_T],
+-        Tuple[type, Tuple[object, ...]],
++        Tuple[type, Tuple[object, ...], bool],
+     ]:
+         cls = type(self)
+-        return cls, (self.__origin__, self.__args__)
++        return cls, (self.__origin__, self.__args__, self.__unpacked__)
+ 
+     def __mro_entries__(self, bases: Iterable[object]) -> Tuple[type]:
+         return (self.__origin__,)
+@@ -136,7 +156,11 @@ class _GenericAlias:
+         try:
+             return super().__getattribute__("_hash")
+         except AttributeError:
+-            self._hash: int = hash(self.__origin__) ^ hash(self.__args__)
++            self._hash: int = (
++                hash(self.__origin__) ^
++                hash(self.__args__) ^
++                hash(self.__unpacked__)
++            )
+             return super().__getattribute__("_hash")
+ 
+     def __instancecheck__(self, obj: object) -> NoReturn:
+@@ -153,7 +177,8 @@ class _GenericAlias:
+         """Return ``repr(self)``."""
+         args = ", ".join(_to_str(i) for i in self.__args__)
+         origin = _to_str(self.__origin__)
+-        return f"{origin}[{args}]"
++        prefix = "*" if self.__unpacked__ else ""
++        return f"{prefix}{origin}[{args}]"
+ 
+     def __getitem__(self: _T, key: object | Tuple[object, ...]) -> _T:
+         """Return ``self[key]``."""
+@@ -175,9 +200,17 @@ class _GenericAlias:
+             return NotImplemented
+         return (
+             self.__origin__ == value.__origin__ and
+-            self.__args__ == value.__args__
++            self.__args__ == value.__args__ and
++            self.__unpacked__ == getattr(
++                value, "__unpacked__", self.__unpacked__
++            )
+         )
+ 
++    def __iter__(self: _T) -> Generator[_T, None, None]:
++        """Return ``iter(self)``."""
++        cls = type(self)
++        yield cls(self.__origin__, self.__args__, True)
++
+     _ATTR_EXCEPTIONS: ClassVar[FrozenSet[str]] = frozenset({
+         "__origin__",
+         "__args__",
+@@ -187,6 +220,8 @@ class _GenericAlias:
+         "__reduce_ex__",
+         "__copy__",
+         "__deepcopy__",
++        "__unpacked__",
++        "__typing_unpacked_tuple_args__",
+     })
+ 
+     def __getattribute__(self, name: str) -> Any:
+-- 
+2.35.3
+
+From c26f3389e0010ed7c4f6930b2472961393a44b05 Mon Sep 17 00:00:00 2001
+From: Bas van Beek <b.f.van.beek@vu.nl>
+Date: Wed, 25 May 2022 16:53:25 +0200
+Subject: [PATCH] TST: Add `npt._GenericAlias` tests for (backported) Python
+ 3.11 features
+
+---
+ numpy/typing/tests/test_generic_alias.py | 45 ++++++++++++++++++++++--
+ 1 file changed, 42 insertions(+), 3 deletions(-)
+
+diff --git a/numpy/typing/tests/test_generic_alias.py b/numpy/typing/tests/test_generic_alias.py
+index 62a8d0b..786ceec 100644
+--- a/numpy/typing/tests/test_generic_alias.py
++++ b/numpy/typing/tests/test_generic_alias.py
+@@ -10,6 +10,7 @@ from typing import TypeVar, Any, Callable, Tuple, Type, Union
+ import pytest
+ import numpy as np
+ from numpy.typing._generic_alias import _GenericAlias
++from typing_extensions import Unpack
+ 
+ ScalarType = TypeVar("ScalarType", bound=np.generic, covariant=True)
+ T1 = TypeVar("T1")
+@@ -55,8 +56,8 @@ class TestGenericAlias:
+         ("__origin__", lambda n: n.__origin__),
+         ("__args__", lambda n: n.__args__),
+         ("__parameters__", lambda n: n.__parameters__),
+-        ("__reduce__", lambda n: n.__reduce__()[1:]),
+-        ("__reduce_ex__", lambda n: n.__reduce_ex__(1)[1:]),
++        ("__reduce__", lambda n: n.__reduce__()[1][:3]),
++        ("__reduce_ex__", lambda n: n.__reduce_ex__(1)[1][:3]),
+         ("__mro_entries__", lambda n: n.__mro_entries__([object])),
+         ("__hash__", lambda n: hash(n)),
+         ("__repr__", lambda n: repr(n)),
+@@ -66,7 +67,6 @@ class TestGenericAlias:
+         ("__getitem__", lambda n: n[Union[T1, T2]][np.float32, np.float64]),
+         ("__eq__", lambda n: n == n),
+         ("__ne__", lambda n: n != np.ndarray),
+-        ("__dir__", lambda n: dir(n)),
+         ("__call__", lambda n: n((1,), np.int64, BUFFER)),
+         ("__call__", lambda n: n(shape=(1,), dtype=np.int64, buffer=BUFFER)),
+         ("subclassing", lambda n: _get_subclass_mro(n)),
+@@ -100,6 +100,45 @@ class TestGenericAlias:
+             value_ref = func(NDArray_ref)
+             assert value == value_ref
+ 
++    def test_dir(self) -> None:
++        value = dir(NDArray)
++        if sys.version_info < (3, 9):
++            return
++
++        # A number attributes only exist in `types.GenericAlias` in >= 3.11
++        if sys.version_info < (3, 11, 0, "beta", 3):
++            value.remove("__typing_unpacked_tuple_args__")
++        if sys.version_info < (3, 11, 0, "beta", 1):
++            value.remove("__unpacked__")
++        assert value == dir(NDArray_ref)
++
++    @pytest.mark.parametrize("name,func,dev_version", [
++        ("__iter__", lambda n: len(list(n)), ("beta", 1)),
++        ("__iter__", lambda n: next(iter(n)), ("beta", 1)),
++        ("__unpacked__", lambda n: n.__unpacked__, ("beta", 1)),
++        ("Unpack", lambda n: Unpack[n], ("beta", 1)),
++
++        # The right operand should now have `__unpacked__ = True`,
++        # and they are thus now longer equivalent
++        ("__ne__", lambda n: n != next(iter(n)), ("beta", 1)),
++
++        # >= beta3 stuff
++        ("__typing_unpacked_tuple_args__",
++         lambda n: n.__typing_unpacked_tuple_args__, ("beta", 3)),
++    ])
++    def test_py311_features(
++        self,
++        name: str,
++        func: FuncType,
++        dev_version: tuple[str, int],
++    ) -> None:
++        """Test Python 3.11 features."""
++        value = func(NDArray)
++
++        if sys.version_info >= (3, 11, 0, *dev_version):
++            value_ref = func(NDArray_ref)
++            assert value == value_ref
++
+     def test_weakref(self) -> None:
+         """Test ``__weakref__``."""
+         value = weakref.ref(NDArray)()
+-- 
+2.35.3
+
+From 74868ee9bf08821fef7dc416beba312251b0bd7d Mon Sep 17 00:00:00 2001
+From: Bas van Beek <b.f.van.beek@vu.nl>
+Date: Wed, 25 May 2022 16:52:31 +0200
+Subject: [PATCH] TST: Reintroduce `typing_extensions` as a test requirement
+
+---
+ environment.yml       | 1 +
+ test_requirements.txt | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/environment.yml b/environment.yml
+index 58305e6..69c4ca0 100644
+--- a/environment.yml
++++ b/environment.yml
+@@ -20,6 +20,7 @@ dependencies:
+   - hypothesis
+   # For type annotations
+   - mypy=0.930
++  - typing_extensions>=4.2.0
+   # For building docs
+   - sphinx=4.1.1
+   - numpydoc=1.1.0
+diff --git a/test_requirements.txt b/test_requirements.txt
+index e33649c..482994a 100644
+--- a/test_requirements.txt
++++ b/test_requirements.txt
+@@ -10,3 +10,4 @@ cffi; python_version < '3.10'
+ # For testing types. Notes on the restrictions:
+ # - Mypy relies on C API features not present in PyPy
+ mypy==0.930; platform_python_implementation != "PyPy"
++typing_extensions>=4.2.0
+-- 
+2.35.3
+
+From b59d90ef101e7352c1f2e6a53114f399b5179235 Mon Sep 17 00:00:00 2001
+From: Bas van Beek <43369155+BvB93@users.noreply.github.com>
+Date: Thu, 26 May 2022 17:35:10 +0200
+Subject: [PATCH] TST: Remove the `__reduce__` tests
+
+Deliberate divergence w.r.t. CPython
+---
+ numpy/typing/tests/test_generic_alias.py | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/numpy/typing/tests/test_generic_alias.py b/numpy/typing/tests/test_generic_alias.py
+index 1c09097..55bd059 100644
+--- a/numpy/typing/tests/test_generic_alias.py
++++ b/numpy/typing/tests/test_generic_alias.py
+@@ -56,8 +56,6 @@ class TestGenericAlias:
+         ("__origin__", lambda n: n.__origin__),
+         ("__args__", lambda n: n.__args__),
+         ("__parameters__", lambda n: n.__parameters__),
+-        ("__reduce__", lambda n: n.__reduce__()[1][:3]),
+-        ("__reduce_ex__", lambda n: n.__reduce_ex__(1)[1][:3]),
+         ("__mro_entries__", lambda n: n.__mro_entries__([object])),
+         ("__hash__", lambda n: hash(n)),
+         ("__repr__", lambda n: repr(n)),
+-- 
+2.35.3
+

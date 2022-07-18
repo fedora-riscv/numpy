@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.22.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -31,6 +31,13 @@ Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}
 Source1:        https://numpy.org/doc/1.19/numpy-html.zip
 # Upstream issue: https://github.com/numpy/numpy/issues/21526
 Patch:          21543.patch
+# And a followup, https://github.com/numpy/numpy/pull/21605/commits/4461ec48
+#                 https://github.com/numpy/numpy/pull/21605/commits/2bb09680
+#                 https://github.com/numpy/numpy/pull/21605/commits/46826998
+#                 https://github.com/numpy/numpy/pull/21605/commits/f3fd03f3
+Patch:          21605.patch
+# Python 3.11.0b4 fix, https://github.com/numpy/numpy/pull/21982
+Patch:          21982.patch
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -65,6 +72,7 @@ BuildRequires:  lapack-devel
 BuildRequires:  python3-hypothesis
 BuildRequires:  python3-pytest
 BuildRequires:  python3-test
+BuildRequires:  python3-typing-extensions
 %endif
 BuildRequires: %{blaslib}-devel
 
@@ -213,6 +221,9 @@ python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 an
 
 
 %changelog
+* Mon Jul 18 2022 Miro Hrončok <mhroncok@redhat.com> - 1:1.22.0-6
+- GenericAlias fixes for Python 3.11.0b4+
+
 * Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 1:1.22.0-5
 - Rebuilt for Python 3.11
 
