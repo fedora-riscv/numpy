@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.22.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -221,6 +221,9 @@ python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 an
 
 
 %changelog
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.22.0-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
 * Mon Jul 18 2022 Miro Hrončok <mhroncok@redhat.com> - 1:1.22.0-6
 - GenericAlias fixes for Python 3.11.0b4+
 
