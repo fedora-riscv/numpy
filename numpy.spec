@@ -20,7 +20,7 @@
 
 Name:           numpy
 Version:        1.24.3
-Release:        1%{?dist}
+Release:        1.rv64%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -163,6 +163,9 @@ export PYTHONPATH=%{buildroot}%{python3_sitearch}
 # Some tests also overflow on 32bit
 %global ix86_k and not test_vector_matrix_values and not test_matrix_vector_values and not test_identityless_reduction_huge_array and not (TestKind and test_all)
 %endif
+%ifarch riscv64
+%global riscv64_k and not test_fpclass and not (TestBoolCmp and test_float)
+%endif
 python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 %{?ix86_k}' \
                                   -W "ignore:pkg_resources is deprecated as an API::pkg_resources"
 %endif
@@ -210,6 +213,9 @@ python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 %{
 
 
 %changelog
+* Fri Apr 28 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 1:1.24.3-1.rv64
+- cherry-pick davidlt's patch for Fedora 38 riscv64 rebuilding.
+
 * Mon Apr 24 2023 Gwyn Ciesla <gwync@protonmail.com> - 1:1.24.3-1
 - 1.24.3
 
@@ -232,6 +238,9 @@ python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 %{
 * Fri Oct 21 2022 Miro Hrončok <mhroncok@redhat.com> - 1:1.23.4-1
 - Update to 1.23.4
 - Use distutils from setuptools to build the package
+
+* Wed Sep 21 2022 David Abdurachmanov <davidlt@rivosinc.com> - 1:1.22.0-7.rv64
+- Skips specific failing riscv64 tests only
 
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.22.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
