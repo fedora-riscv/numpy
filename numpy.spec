@@ -66,6 +66,7 @@ BuildRequires:  python3-test
 BuildRequires:  python3-typing-extensions
 %endif
 BuildRequires: %{blaslib}-devel
+BuildRequires: chrpath
 
 %description -n python3-numpy
 NumPy is a general-purpose array-processing package designed to
@@ -122,7 +123,6 @@ EOF
 env OPENBLAS=%{_libdir} \
     BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    SETUPTOOLS_USE_DISTUTILS=stdlib
     %{__python3} setup.py build
 
 %install
@@ -136,7 +136,6 @@ popd
 env OPENBLAS=%{_libdir} \
     FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    SETUPTOOLS_USE_DISTUTILS=stdlib
     %{__python3} setup.py install --root %{buildroot} --prefix=%{_prefix}
 pushd %{buildroot}%{_bindir} &> /dev/null
 ln -s f2py3 f2py.numpy
@@ -145,6 +144,13 @@ popd &> /dev/null
 #symlink for includes, BZ 185079
 mkdir -p %{buildroot}%{_includedir}
 ln -s %{python3_sitearch}/%{name}/core/include/numpy/ %{buildroot}%{_includedir}/numpy
+
+# distutils from setuptools don't have the patch that was created to avoid standard runpath here
+# we strip it manually instead
+# ERROR   0001: file '...' contains a standard runpath '/usr/lib64' in [/usr/lib64]
+chrpath --delete %{buildroot}%{python3_sitearch}/%{name}/core/_multiarray_umath.*.so
+chrpath --delete %{buildroot}%{python3_sitearch}/%{name}/linalg/lapack_lite.*.so
+chrpath --delete %{buildroot}%{python3_sitearch}/%{name}/linalg/_umath_linalg.*.so
 
 
 %check
@@ -205,6 +211,7 @@ python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 %{
 %changelog
 * Fri Oct 21 2022 Miro Hrončok <mhroncok@redhat.com> - 1:1.23.4-1
 - Update to 1.23.4
+- Use distutils from setuptools to build the package
 
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.22.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
