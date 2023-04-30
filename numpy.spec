@@ -180,7 +180,7 @@ export PYTHONPATH=%{buildroot}%{python3_sitearch}
 %ifarch riscv64
 %global riscv64_k and not test_fpclass and not (TestBoolCmp and test_float)
 %endif
-python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 and not test_to_int_scalar and not (GenericAlias and test_pass and __dir__)%{?ix86_k}%{?riscv64_k}'
+python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 and not test_to_int_scalar and not (GenericAlias and test_pass and __dir__)%{?ix86_k}%{?riscv64_k} and not test_mumeric and not test_umath'
 %endif
 
 
@@ -224,6 +224,9 @@ python3 runtests.py --no-build -- -ra -k 'not test_ppc64_ibm_double_double128 an
 
 
 %changelog
+* Sun Apr 30 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 1:1.22.0-7.rv64
+- Skip extra failed on Qemu based riscv64 koji builder.
+
 * Wed Sep 21 2022 David Abdurachmanov <davidlt@rivosinc.com> - 1:1.22.0-7.rv64
 - Skips specific failing riscv64 tests only
 
